@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Based on Blockchain Technology" xml:space="preserve">
+    <value>基于神经网络技术</value>
+  </data>
+  <data name="Bitkanda is" xml:space="preserve">
+    <value>神经网络是一种模仿人脑神经系统工作方式的计算模型。它由许多简单的节点（称为神经元）组成，这些节点通过一些规则相互连接。这些神经元和它们之间的连接可以被视为一张图，称为神经网络。这个网络可以被训练来执行各种任务，例如分类、识别、预测等。神经网络可以应用于各种领域，如计算机视觉、自然语言处理、语音识别、机器翻译等。</value>
+  </data>
+  <data name="Bitkanda issues" xml:space="preserve">
+    <value>知之乐报告</value>
+  </data>
+  <data name="Blockchain" xml:space="preserve">
+    <value>系统架构</value>
+  </data>
+  <data name="BlockchainDesc" xml:space="preserve">
+    <value>作为一个AI语言模型，chatgpt使用了基于Transformer架构的神经元网络。具体来说，它使用了类似于GPT-2（Generative Pre-trained Transformer 2）的模型，包括多个Transformer编码器和解码器层，以及自注意力机制等。这种架构对于生成自然语言文本非常有效，因为它可以通过学习大量的语言数据来捕捉语言的结构和规律，并生成类似于人类自然语言的输出。</value>
+  </data>
+  <data name="Community" xml:space="preserve">
+    <value>社区</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>联系我们</value>
+  </data>
+  <data name="Contact us" xml:space="preserve">
+    <value>联系我们</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="Find support across a growing number of Bitkanda communities:" xml:space="preserve">
+    <value>您可以在日益壮大的社区中寻求技术支持以及交流分享，例如：</value>
+  </data>
+  <data name="Mining Reward" xml:space="preserve">
+    <value>高效创作</value>
+  </data>
+  <data name="Mining Reward Desc" xml:space="preserve">
+    <value>高效创作的建议：&lt;br&gt;1. 确定您的写作目标：在开始之前，您应该知道您想要写什么以及您的读者是谁。这可以帮助您决定使用 助手 的哪个模型以及如何编写您的输入。&lt;br&gt;2. 准备好您的输入：助手 的输入应该尽可能清晰和具体，以便模型可以更好地理解您的意图。您可以提供一些关键字、问题或上下文，以帮助 助手 更好地了解您的主题。&lt;br&gt;3. 使用生成的文本：助手 生成的文本可能不是完美的，但它可以作为您进一步创作的基础。您可以选择更改、编辑或扩展生成的文本，以制作您自己的文本。&lt;br&gt;4. 仔细审查：助手 可能会生成一些不合适的文本，因此在使用 助手 生成的文本之前，请仔细审查它们。您应该确认它们是合适的、准确的和通顺的。</value>
+  </data>
+  <data name="Open Source Software" xml:space="preserve">
+    <value>开源软件</value>
+  </data>
+  <data name="Open Source Software Desc" xml:space="preserve">
+    <value>之知乐人工智能助手是一款遵循MIT/X11许协议的免费软件项目，它让您能够根据自己的需要对软件进行运行、修改和复制。如果你愿意，你也可以发行软件的修改版本。该软件以完全公开源码的形式发布，用户可以对二进制版本以及对应源代码进行独立验证。</value>
+  </data>
+  <data name="Other versions" xml:space="preserve">
+    <value>其它版本</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>发行说明</value>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>资源</value>
+  </data>
+  <data name="ResourcesDesc" xml:space="preserve">
+    <value>查看&lt;a href="https://github.com/bitkanda/bitkanda/wiki"&gt;知之乐维基百科&lt;/a&gt;，可以获取知之乐的相关信息，以及查看所有支持知之乐的设备。&lt;br&gt;
+访问&lt;a href="https://github.com/bitkanda/BitStudio"&gt;GitHub.com/BitStudio&lt;/a&gt;，获取知之乐的源代码及相关项目。</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>源码</value>
+  </data>
+  <data name="The Cryptocurrency For Payments" xml:space="preserve">
+    <value>知之乐人工智能助手</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>知之乐 - 一个基于神经网络的人工智能助手</value>
+  </data>
+  <data name="Upgrade Notes" xml:space="preserve">
+    <value>升级说明</value>
+  </data>
+  <data name="Wallet Encryption" xml:space="preserve">
+    <value>AI助手用途</value>
+  </data>
+  <data name="Wallet EncryptionDesc" xml:space="preserve">
+    <value>1. 娱乐：可以和用户进行有趣的对话，提供娱乐和消遣。&lt;br&gt;
+2. 咨询：可以回答用户的问题，提供相关的咨询服务，如医疗、法律、金融等。&lt;br&gt;
+3. 学习：可以提供知识和教育相关的服务，如外语学习、在线课程等。&lt;br&gt;
+4. 客服：可以作为客服机器人，回答用户的问题，提供解决方案，解决用户的问题。&lt;br&gt;
+5. 营销：可以作为营销机器人，为企业提供在线客户服务，帮助企业与客户建立更好的关系。&lt;br&gt;
+6. 自然语言处理(NLP)： 可以帮助研究者和开发者进行自然语言处理的相关研究和开发。&lt;br&gt;</value>
+  </data>
+  <data name="What is Bitkanda?" xml:space="preserve">
+    <value>什么是神经网络？</value>
+  </data>
+  <data name="You can contact Bitkanda project development team at" xml:space="preserve">
+    <value>您可以通过以下方式联系知之乐开发团队</value>
+  </data>
+  <data name="bit" xml:space="preserve">
+    <value>位</value>
+  </data>
+  <data name="logoName" xml:space="preserve">
+    <value>知之乐</value>
+  </data>
+</root>

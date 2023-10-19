@@ -1,0 +1,505 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+@*<h2>@ViewData["Title"]</h2>
+    <h3>@ViewData["Message"]</h3>*@
+
+ 
+<environment include="Development">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script src="~/static/js/manifest.js" defer="defer"></script>
+    <script src="~/static/js/vendor.js" defer="defer"></script>
+    <script src="~/static/js/app.js" defer="defer"></script>
+    @*<script src="https://cdn.bootcdn.net/ajax/libs/web3/1.3.0/web3.min.js"></script>*@
+</environment>
+<environment exclude="Development">
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            crossorigin="anonymous"
+            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+            crossorigin="anonymous"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+    </script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+    @*<script src="~/dist/web3.min.js" asp-append-version="true"></script>*@
+
+
+</environment>
+
+
+
+<script>
+    //var isMetaMask = false;
+    var currentAccount = {
+        ChainID: 0,//,0=unkown,0x1=eth,0x56=BSC
+        Address: '',//nothing
+        App: 0//0=unkown,1=metamask,2tokenpocket
+    };
+
+    $(function () {
+
+        if (window.ethereum != undefined && window.ethereum.isMetaMask) {
+            $("#isconnection").html('metaMask installed!');
+            currentAccount.App = 1;
+        }
+        else {
+            $("#isconnection").html('please Install for metaMask');
+        }
+        //set current chainid.
+        getchainid();
+
+        connectionaotu();
+        $("#connect").click(function () {
+            connectionaotu();
+            getBlanceForBKD();
+        });
+
+        $("#btn_pay").click(function () {
+            pay();
+        });
+        $("#btn_sig").click(function () {
+            //eth_signTypedData_v4();
+            eth_sign_register();
+            //eth_signTypedData_v4_1();
+        });
+
+
+        ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) {
+
+                updateaccount(accounts[0]);
+                //$('#account').html(accounts[0]);
+            }
+            console.log(`Accounts:\n${accounts.join('\n')}`);
+            // Handle the new accounts, or lack thereof.
+            // "accounts" will always be an array, but it can be empty.
+        });
+
+        ethereum.on('chainChanged', (chainId) => {
+            var _chainid = parseInt(chainId, 16);
+            updatechainid(_chainid);
+            // Handle the new chain.
+            // Correctly handling chain changes can be complicated.
+            // We recommend reloading the page unless you have good reason not to.
+            console.debug(_chainid);
+            //window.location.reload();
+        });
+
+    });
+
+    function connectionaotu() {
+        if (currentAccount.App == 1) {
+            //alert(window.ethereum.isConnected());
+            //  $("#connect").html("connected!");
+            connectClick();
+            //getaccount();
+        }
+        else
+            $("#connect").html("not connect!");
+    }
+
+    function connectClick() {
+
+        ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => {
+            if (accounts.length > 0) {
+
+                updateaccount(accounts[0]);
+                //$('#account').html(accounts[0]);
+            }
+            $("#connect").html("connected!");
+            console.log(`Accounts:\n${accounts.join('\n')}`);
+        })
+            .catch((error) => {
+                console.error(
+                    `Error fetching accounts: ${error.message}.
+       Code: ${error.code}. Data: ${error.data}`
+                );
+            });
+
+    }
+
+    function updatechainid(chainId) {
+        currentAccount.ChainID = chainId;
+        if (currentAccount.ChainID == 1)
+            $('#chainid').html("Chain:ETH");
+        else if (currentAccount.ChainID == 56)
+            $('#chainid').html("Chain:BSC");
+        else
+            $('#chainid').html("Chain:" + currentAccount.ChainID);
+    }
+
+    function getBlanceForBKD() {
+
+        // Example 3: Log available accounts
+        ethereum
+            .request({
+                method: 'eth_call', params: [
+
+                    //{
+                    //    from: "0x61b1e86Ce3ACbD3CF3C430426aeD39948C8F7c71",//current addrss
+                    //    to:"0xb7b37032bb857f0814ab903caa53e51fcbf0f7e0",//bkd contract
+                    //    data: "0x70a08231000000000000000000000000" +"61b1e86Ce3ACbD3CF3C430426aeD39948C8F7c71"
+                    //},
+                    {
+                        from: currentAccount.Address,//current addrss
+                        to: "0xb7b37032bb857f0814ab903caa53e51fcbf0f7e0",//bkd contract
+                        data: "0x70a08231000000000000000000000000" + currentAccount.Address.substr(2, currentAccount.Address.length - 2)
+                    },
+                    "latest"
+
+                ]
+            })
+            .then((data) => {
+                //0x000000000000000000000000000000000000000024169cc45364831ed4410a49
+                // 先把16进制，转换为10进制， 因为代币的精度是18位，需要除以18。这个就是真实的代币数量。
+
+                console.log(`eth_call blance:\n${data}`);
+
+                $.post("/tool/Hexadecimalal", { num: data, d: "18" },
+                    function (data) {
+                        if (data.success == true) {
+                            $('#amount').html(data.data);
+                        }
+                        else {
+                            $('#amount').html('#');
+                        }
+                        console.log("Data Loaded: " + data);
+                    });
+
+
+            })
+            .catch((error) => {
+                console.error(
+                    `Error fetching accounts: ${error.message}.
+       Code: ${error.code}. Data: ${error.data}`
+                );
+            });
+    }
+
+    function updateaccount(account) {
+        currentAccount.Address = account
+        $('#account').html(currentAccount.Address);
+    }
+
+    function getchainid() {
+        ethereum.request({ method: 'eth_chainId' }).then((chainId) => {
+            var _chainid = parseInt(chainId, 16);
+            updatechainid(_chainid);
+            console.log(`chainId:\n${_chainid}`);
+        })
+            .catch((error) => {
+                console.error(
+                    `Error eth_chainId: ${error.message}.  Code: ${error.code}. Data: ${error.data}`
+                );
+            });
+
+    }
+
+    function getaccount() {
+
+        // Example 3: Log available accounts
+        ethereum
+            .request({ method: 'eth_accounts' })
+            .then((accounts) => {
+                console.log(`Accounts:\n${accounts.join('\n')}`);
+
+
+
+            })
+            .catch((error) => {
+                console.error(
+                    `Error fetching accounts: ${error.message}.
+       Code: ${error.code}. Data: ${error.data}`
+                );
+            });
+
+    }
+
+    function pay() {
+
+        var params = [
+            {
+                from: currentAccount.Address,
+                to: '0x61b1e86Ce3ACbD3CF3C430426aeD39948C8F7c71',
+                // gas: '0x76c0', // 30400
+                //   gasPrice: '0x9184e72a000', // 10000000000000
+                value: '0x9184e72a000', // 2441406250
+                data:
+                    '',
+            },
+        ];
+
+        ethereum
+            .request({
+                method: 'eth_sendTransaction',
+                params,
+            })
+            .then((result) => {
+                console.log(result);
+                // The result varies by by RPC method.
+                // For example, this method will return a transaction hash hexadecimal string on success.
+            })
+            .catch((error) => {
+                console.log(error);
+                // If the request fails, the Promise will reject with an error.
+            });
+
+    }
+
+    function sig() {
+
+        var msg = '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
+
+        var params = [
+            currentAccount.Address,
+            msg
+        ];
+
+        ethereum
+            .request({
+                method: 'eth_sign',
+                params,
+            })
+            .then((result) => {
+                console.log(result);
+                // The result varies by by RPC method.
+                // For example, this method will return a transaction hash hexadecimal string on success.
+            })
+            .catch((error) => {
+                console.log(error);
+                // If the request fails, the Promise will reject with an error.
+            });
+
+    }
+
+
+    function eth_signTypedData_v4_1() {
+
+        var msgParams =
+        {
+            "types": {
+                EIP712Domain: [
+                    { name: "name", "type": "string" },
+                    { name: "version", "type": "string" },
+                    { name: "chainId", "type": "uint256" },
+                    //{ name: "verifyingContract", "type": "address" }
+                ],
+                "SafeTx": [
+                    { "type": "address", "name": "to" },
+                    { "type": "uint256", "name": "value" },
+                    { "type": "bytes", "name": "data" },
+                    { "type": "uint8", "name": "operation" },
+                    { "type": "uint256", "name": "safeTxGas" },
+                    { "type": "uint256", "name": "baseGas" },
+                    { "type": "uint256", "name": "gasPrice" },
+                    { "type": "address", "name": "gasToken" },
+                    { "type": "address", "name": "refundReceiver" },
+                    { "type": "uint256", "name": "nonce" }
+                ]
+            },
+            "domain": {
+               // "verifyingContract": "0x25a6c4BBd32B2424A9c99aEB0584Ad12045382B3",
+                "name": "BKD",
+                "version": "1",
+                "chainId": "97"
+            },
+            "primaryType": "SafeTx",
+            "message": {
+                "to": "0x9eE457023bB3De16D51A003a247BaEaD7fce313D",
+                "value": "20000000000000000",
+                "data": "0x",
+                "operation": 0,
+                "safeTxGas": 27845,
+                "baseGas": 0,
+                "gasPrice": "0",
+                "gasToken": "0x0000000000000000000000000000000000000000",
+                "refundReceiver": "0x0000000000000000000000000000000000000000",
+                "nonce": 3
+            }
+        };
+
+        var params = [
+            currentAccount.Address,
+            JSON.stringify(msgParams)
+        ];
+
+        ethereum
+            .request({
+                method: 'eth_signTypedData_v4',
+                params,
+            })
+            .then((result) => {
+                console.log(result);
+                // The result varies by by RPC method.
+                // For example, this method will return a transaction hash hexadecimal string on success.
+                $("#sigResult").html(result);
+            })
+            .catch((error) => {
+                console.log(error);
+                // If the request fails, the Promise will reject with an error.
+            });
+
+    }
+    function eth_signTypedData_v4() {
+
+        var msgParams =
+        {
+            "types": {
+                EIP712Domain: [
+                    { name: "name", "type": "string" },
+                    { name: "version", "type": "string" },
+                    { name: "chainId", "type": "uint256" },
+                    { name: "verifyingContract", "type": "address" }
+                ],
+                "SafeTx": [
+                    { "type": "address", "name": "to" },
+                    { "type": "uint256", "name": "value" },
+                    { "type": "bytes", "name": "data" },
+                    { "type": "uint8", "name": "operation" },
+                    { "type": "uint256", "name": "safeTxGas" },
+                    { "type": "uint256", "name": "baseGas" },
+                    { "type": "uint256", "name": "gasPrice" },
+                    { "type": "address", "name": "gasToken" },
+                    { "type": "address", "name": "refundReceiver" },
+                    { "type": "uint256", "name": "nonce" }
+                ]
+            },
+            "domain": {
+                "verifyingContract": "0x25a6c4BBd32B2424A9c99aEB0584Ad12045382B3",
+                "name": "BKD",
+                "version": "1",
+                "chainId": "97"
+            },
+            "primaryType": "SafeTx",
+            "message": {
+                "to": "0x9eE457023bB3De16D51A003a247BaEaD7fce313D",
+                "value": "20000000000000000",
+                "data": "0x",
+                "operation": 0,
+                "safeTxGas": 27845,
+                "baseGas": 0,
+                "gasPrice": "0",
+                "gasToken": "0x0000000000000000000000000000000000000000",
+                "refundReceiver": "0x0000000000000000000000000000000000000000",
+                "nonce": 3
+            }
+        };
+
+        var params = [
+            currentAccount.Address,
+            JSON.stringify(msgParams)
+        ];
+
+        ethereum
+            .request({
+                method: 'eth_signTypedData_v4',
+                params,
+            })
+            .then((result) => {
+                console.log(result);
+                // The result varies by by RPC method.
+                // For example, this method will return a transaction hash hexadecimal string on success.
+                $("#sigResult").html(result);
+            })
+            .catch((error) => {
+                console.log(error);
+                // If the request fails, the Promise will reject with an error.
+            });
+
+    }
+
+    function eth_sign_register() {
+
+        var msgParams =
+        {
+            "types": {
+                EIP712Domain: [
+                    { name: "name", "type": "string" },
+                    { name: "version", "type": "string" },
+                    { name: "chainId", "type": "uint256" },
+                ],
+                "Register": [
+                    { "type": "string", "name": "action" },
+                    { "type": "address", "name": "account" },
+                    { "type": "string", "name": "token" }
+                ]
+            },
+            "domain": {
+                "name": "BKD",
+                "version": "1",
+                "chainId": currentAccount.ChainID.toString()// "97"
+            },
+            "primaryType": "Register",
+            "message": {
+                "action": "register",
+                "account": currentAccount.Address,
+                "token": "CfDJ8Dkb7Lr-b4lClc_D8_h1qvOuSe8s_o2LvdAK1dnFRYpePC8ZVlpqjUC3AWhbUFkb7AVT66VF9AuTiPDl48ECyJOvQGwaE5p-tGgH69qvB-k6CkssB4no5wYMDRGHfHBMiAKu8_XhIrHZXpkg2JK9b1c"
+            }
+        };
+
+        //var Web3 = new Eth(window.ethereum);
+
+        console.log(JSON.stringify(msgParams))
+
+        var params = [
+            currentAccount.Address,
+            JSON.stringify(msgParams)
+        ];
+
+        ethereum
+            .request({
+                method: 'eth_signTypedData_v4',
+                params,
+            })
+            .then((result) => {
+                console.log(result);
+                // The result varies by by RPC method.
+                // For example, this method will return a transaction hash hexadecimal string on success.
+                $("#sigResult").html(result);
+            })
+            .catch((error) => {
+                console.log(error);
+                // If the request fails, the Promise will reject with an error.
+            });
+
+    }
+</script>
+
+<body>
+    <table>
+        <tr>
+            <td><label id="chainid">#</label></td>
+            <td><label id="isconnection">是否链接</label></td>
+            <td><label id="account">#</label></td>
+            <td><label id="amount">#</label></td>
+            <td><button id="connect">connect</button></td>
+        </tr>
+        <tr>
+            <td><button id="btn_pay">pay</button></td>
+        </tr>
+        <tr>
+            <td><button id="btn_sig">sig</button></td>
+        </tr>
+        <tr>
+            <td>
+                <div style=" width:300px; white-space:pre-wrap">
+
+                    <label id="sigResult">#</label>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+    <div id="app"></div>
+
+</body>
+
+

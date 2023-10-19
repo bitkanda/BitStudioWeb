@@ -1,0 +1,367 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Options;
+@using Nethereum.Hex.HexConvertors.Extensions;
+@inject IOptions<NethereumFaucet.FaucetSettings> FaucetSettings
+@model NethereumFaucet.ViewModel.FaucetViewModel
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="@Localizer["title"]">
+    <meta name="author" content="">
+    <meta name="generator" content="Hugo 0.55.6" />
+    <title>Bitkanda(BKD) AirDrop</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:200,300,400" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="~/images/bitkanda.png" />
+
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="~/css/slide-unlock.css" rel="stylesheet" />
+ 
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/Particleground.js" tppabs="js/Particleground.js"></script>
+    <script src="~/js/slide.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $(".submit_btn").click(function () {
+                $.ajax({
+                    "url": "/login",
+                    "type": "post",
+                    "data": {
+                        "userName": $("#userName").val(),
+                        "passWord": $("#passWord").val()
+                    },
+                    "success": function (d) {
+                        if (d.status != "ok") {
+                            Slider_init();
+                        }
+                        alert(d.msg);
+                    }
+                })
+
+
+            })
+
+
+            ////粒子背景特效
+            //$('body').particleground({
+            //    dotColor: '#5cbdaa',
+            //    lineColor: '#5cbdaa'
+            //});
+
+            Slider_init();
+        });
+
+
+        function Slider_init() {
+            var slider = new SliderUnlock("#slider", {
+                successLabelTip: "Authentication is successful"
+            }, function () {
+
+                huadongCode();
+            });
+            slider.init();
+        }
+
+
+
+        function huadongCode() {
+
+            num = 1;
+            checkCode = [];
+            $.ajax({
+                "url": "/Faucet/VerificationCodeImage",
+                "type": "get",
+                "success": function (data) {
+                    var html = "<div id=\"imagediv\" style='position: absolute;left:10px; top:30px;background: #fff;z-index:300'><img src=" + data.result + " alt=\"看不清？点击更换\" id=\"image\"/></div>";
+                    html += "<div id='divrefresh' style='width:20px;height:20px;position:absolute;cursor: pointer;margin-left: 90%;'> <img src=\"/images/shaxin.jpg\" /> </div>";
+                    $("#huadongImage").css("display", "block").html(html);
+                    $("#labelTip").html(data.msg);
+                    imageClick();
+                    divrefreshClick();
+                },
+                "complete": function (XMLHttpRequest, status) {
+                    if (status == 'timeout') {
+
+                    }
+                }
+            })
+        }
+
+
+        function divrefreshClick() {
+            $("#divrefresh").click(function () {
+                huadongCode();
+                num = 1;
+                checkCode = [];
+            })
+        }
+
+
+        var num = 1;
+        var checkCode = [];
+        function createPoint(pos) {
+            if (num == 2) {
+                PostcheckCode();
+            }
+
+            $("#imagediv").append('<div class="point-area" onclick="pointClick(this)" style="background-color:#539ffe;color:#fff;z-index:9999;width:25px;height:25px;text-align:center;line-height:25px;border-radius: 20%;position:absolute;border:2px solid white;top:' + parseInt(pos.y - 10) + 'px;left:' + parseInt(pos.x - 10) + 'px;">' + num + '</div>');
+            ++num;
+        }
+
+
+
+        function PostcheckCode() {
+
+            $.ajax({
+                "url": "/faucet/check",
+                "type": "post",
+                "data": {
+                    "code": JSON.stringify(checkCode)
+                },
+                "success": function (d) {
+                    if (d.status == "ok") {
+                        $("#labelTip").html(d.msg);
+                        $("#huadongImage").hide();
+                    } else {
+                        huadongCode();
+                    }
+                },
+                "error": function (error) {
+
+                }
+            })
+
+        }
+
+
+
+        function pointClick(obj) {
+            num = 1;
+            checkCode = [];
+            $(obj).parent().find('.point-area').remove();
+        }
+
+
+        function getMousePos(obj, event) {
+            var e = event || window.event;
+            var x = e.clientX - ($(obj).offset().left - $(window).scrollLeft());
+            var y = e.clientY - ($(obj).offset().top - $(window).scrollTop());
+            checkCode.push({ "_X": parseInt(x), "_Y": parseInt(y) });
+            return { 'x': parseInt(x), 'y': parseInt(y) };
+        }
+
+        function imageClick() {
+            $("#imagediv").click(function () {
+                var _this = $(this);
+                var pos = getMousePos(_this);
+                createPoint(pos);
+            })
+
+        }
+
+
+
+
+
+
+    </script>
+</head>
+<body id="page-top" class="index">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll " style="z-index:99999;position:relative" href="@Url.Action("index","home")">
+                    <img src="~/images/bitkanda.png" class="navbar-logo"  style="width:40px;height:40px" alt="bitkanda logo" />
+                    <span class="navbar-title">Bitkanda</span>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse relative" id="bs-example-navbar-collapse-1">
+
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    @bitkanda.Controllers.HomeController.GetDisplay()      <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="?culture=en-US">English</a>
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/home/index?#about">@Localizer["About"]</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/home/index?#download">@Localizer["Download"]</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/home/index?#contact">@Localizer["Contact"]</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/home/index?/faucet/index">Air Drop</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/resources/index">Whitepaper</a>
+                    </li>
+                    @*<li>
+                <a href="https://litecointalk.io/">Forum</a>
+            </li>
+            <li>
+                <a href="https://litecoin-foundation.org/shop">Foundation</a>
+            </li>*@
+                </ul>
+            </div>
+
+        </div>
+
+    </nav>
+
+    <header>
+        <div class="container">
+
+            <div class="intro-text" style="background-color:#020202a3">
+                <h1>Bitkanda (BKD) AirDrop</h1>
+                <p class="lead">Please enter the BSC account address to be funded with @FaucetSettings.Value.AmountToFund BKD</p>
+                <p class="lead">Contract: 0xb7b37032bb857f0814ab903caa53e51fcbf0f7e0</p>
+
+                <form class="form-inline" asp-action="Index">
+                    <div class="form-group">
+                        <label>Address:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">0x</div>
+                            @Html.HiddenFor(model => model.SourceAddress)
+                            @Html.TextBoxFor(model => model.Address, new { @class = "form-control", @placeholder = "address", @id = "address", @size = 60 })
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary ">Fund account</button>
+
+
+                    <div style="overflow:hidden;border:0px;border-color:red;border-style:solid;width:290px;margin:10px auto">
+                        <div id="slider" style="border:0px;border-color:yellow;border-style:solid;width:290px">
+                            <div id="slider_bg"></div>
+                            <span id="label">>></span>
+                            <span id="labelTip">Drag and slide verification</span>
+                        </div>
+                        <div id="huadongImage" style="width:300px; border:1px solid #ccc;
+                height:250px; z-index:200; display:none; position:relative;margin-top:45px;
+                background-color: white;overflow:hidden;
+                 ">
+                        </div>
+
+
+                    </div>
+
+                </form>
+                <br />
+                @Html.ValidationSummary(false, "", new { @class = "", @style = "position: position: relative;margin-top:45px;color:red " })
+                @if (Model != null && !String.IsNullOrEmpty(Model.TransactionHash))
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">Fund Account transaction request</h2>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th style="color:black">Account Address:</th>
+                                        <td style="color:black">@Model.Address</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="color:black">Transaction</th>
+                                        <td><a href="@FaucetSettings.Value.UrlTxnExplorer@Model.TransactionHash.EnsureHexPrefix()">@Model.TransactionHash.EnsureHexPrefix()</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="color:black">Amount</th>
+                                        <td style="color:black">@Model.Amount</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                }
+
+                <div style="margin:auto;">
+                    <a data-v-8ef46b5e="" href="https://twitter.com/Bitkanda" target="_blank" rel="noopener"><img data-v-8ef46b5e="" src="~/images/twitter_.png" alt=""></a>
+
+                    <a data-v-8ef46b5e="" href="https://t.me/joinchat/SrqCzFRwR_U0Njc1" target="_blank" rel="noopener"><img data-v-8ef46b5e="" src="~/images/telegram_.png" alt=""></a>
+
+                </div>
+            </div>
+
+   
+        </div>
+       
+        @*<div class="container">
+                <div class="intro-text">
+                    <div class="intro-heading">@Localizer["The Cryptocurrency For Payments"]</div>
+                    <div class="intro-lead-in">@Localizer["Based on Blockchain Technology"]</div>
+                    <a href="#download" id="heroDownload" class="text-left page-scroll btn btn-hero btn-xl btn-spacer">
+                        <i class="fa fa-group  if-os-known distro-graphic "></i>
+                        @Localizer["Download"]
+                        <div class="btn-small detect" data-windows="Bitkanda Core 0.18.0<br /> for Windows" data-mac="Bitkanda Core 0.18.0<br /> for Mac OS X" data-linux="Bitkanda Core 0.18.0<br /> for Linux" data-android="<br /> Bitkanda for Android" data-dl-windows="/0.18.0/win/bitkanda-0.18.0-win32.zip" data-dl-mac="/0.18.0/mac/bitkanda-qt-0.18.0-mac.dmg" data-dl-linux="/0.18.0/ubuntu/bitkanda-0.18.0-64bit.tar.xz" data-dl-android="/0.18.0/android/bitkanda-release-3.14.1.1.apk"></div>
+                    </a>
+                    <p>
+
+                        <a href="#download" class="page-scroll">@Localizer["Other versions"]</a>
+                    </p>
+                </div>
+            </div>*@
+
+
+    </header>
+
+
+
+    @*<script data-cfasync="false" src="/js/email-decode.min.js"></script>*@
+    <script src="~/js/jquery.js"></script>
+
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/jquery.easing.min.js"></script>
+    <script src="~/js/jquery.browser.min.js"></script>
+    <script src="~/js/classie.js"></script>
+    <script src="~/js/cbpAnimatedHeader.js"></script>
+
+    <script src="~/js/agency.js"></script>
+    <script type="application/javascript">
+        @*var doNotTrack = false;
+        if (!doNotTrack) {
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-131796934-2', 'auto');
+
+            ga('send', 'pageview');
+        }*@
+    </script>
+</body>
+</html>

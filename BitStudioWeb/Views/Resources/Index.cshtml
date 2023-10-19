@@ -1,0 +1,321 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bitkanda is a cryptocurrency that enables instant payments to anyone in the world and that can be efficiently mined with consumer-grade hardware.">
+    <meta name="author" content="">
+    <meta name="generator" content="Hugo 0.55.6" />
+    <title>BKD shopping mall white </title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:200,300,400" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="~/images/bitkanda.png" />
+
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body id="page-top" class="index">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" style="z-index:99999;position:relative"  href="@Url.Action("index","home")">
+                    <img src="~/images/bitkanda.png" class="navbar-logo" style="width:40px;height:40px" alt="bitkanda logo" />
+                    <span class="navbar-title">  Bitkanda </span>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse relative" id="bs-example-navbar-collapse-1">
+
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                @bitkanda.Controllers.HomeController.GetDisplay()      <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="?culture=en-US">English</a>
+                    </li>
+                    @*<li>
+                        <a href="?culture=zh-HK">繁體中文</a>
+                    </li>
+                    <li>
+                        <a href="?culture=zh-CN">简体中文</a>
+                    </li>*@
+                    @*<li>
+                        <a href="?culture=cs">Česky</a>
+                    </li>
+                    <li>
+                        <a href="?culture=da">Dansk</a>
+                    </li>
+                    <li>
+                        <a href="?culture=de">Deutsch</a>
+                    </li>
+                    <li>
+                        <a href="?culture=el">Ελληνικά</a>
+                    </li>*@
+                    @*<li>
+                        <a href="?culture=ko">한국어</a>
+                    </li>*@
+                    @*<li>
+                        <a href="?culture=es">Español</a>
+                    </li>
+                    <li>
+                        <a href="?culture=et">Eesti</a>
+                    </li>
+                    <li>
+                        <a href="?culture=fi">Suomi</a>
+                    </li>
+                    <li>
+                        <a href="?culture=fr">Français</a>
+                    </li>
+                    <li>
+                        <a href="?culture=it">Italiano</a>
+                    </li>*@
+                    @*<li>
+                        <a href="?culture=ja-JP">日本語</a>
+                    </li>*@
+                    @*<li>
+                        <a href="?culture=lv">Latviešu</a>
+                    </li>
+                    <li>
+                        <a href="?culture=nl">Nederlands</a>
+                    </li>
+                    <li>
+                        <a href="?culture=no">Norsk</a>
+                    </li>
+                    <li>
+                        <a href="?culture=pl">Polski</a>
+                    </li>
+                    <li>
+                        <a href="?culture=pt">Português</a>
+                    </li>
+                    <li>
+                        <a href="?culture=ru">Русский</a>
+                    </li>
+                    <li>
+                        <a href="?culture=sl">Slovene</a>
+                    </li>
+                    <li>
+                        <a href="?culture=sv">Svenska</a>
+                    </li>
+                    <li>
+                        <a href="?culture=tr">Türkçe</a>
+                    </li>
+                    <li>
+                        <a href="?culture=vi">Việt</a>
+                    </li>*@
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#about">Introduction</a>
+                    </li>
+                 
+                    <li>
+                        <a class="page-scroll" href="#contact">@Localizer["Contact"]</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/faucet/index">Air Drop</a>
+                    </li>
+                    @*<li>
+            <a href="https://litecointalk.io/">Forum</a>
+        </li>
+        <li>
+            <a href="https://litecoin-foundation.org/shop">Foundation</a>
+        </li>*@
+                </ul>
+            </div>
+
+        </div>
+
+    </nav>
+     
+    <section id="about">
+        <div class="container spacer">
+            <div class="row">
+                <div class="col-lg-12 ">
+                    <h2 class="section-heading text-center">Bitkanda(BKD) Shopping mall system introduction</h2>
+                    <p class="large text-muted">A decentralized network mall system based on (BSC) chain that allows sellers and buyers to trade freely. Sellers are free to publish goods for sale,  and buyers are free to buy what they want. Transaction information can be searched in the blockchain, which does not include the personal privacy of buyers and sellers. Transaction status updates and refund status updates   for orders will be updated using smart contracts. The use of (BSC) chain  can create a smooth shopping experience.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">BKD Shopping mall Whitepaper</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div style="margin:0 auto">
+
+
+                    <div class="col-md-4 col-sm-6 btn-spacer ">
+                        <a href="~/pdf/BKD_white_paper_en.pdf" target="_blank" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
+                            <i></i>
+                            <div>
+                                @Localizer["Download"]
+                            </div>
+                            <div class="btn-small">BKD shopping mall white paper-en.pdf</div>
+                            <div class="btn-small">
+                                EN
+                            </div>
+                        </a>
+
+                    </div>
+                    <div class="col-md-4 col-sm-6 btn-spacer ">
+                        <a href="~/pdf/BKD_white_paper_cn.pdf" target="_blank" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
+                            <i></i>
+                            <div>
+                                @Localizer["Download"]
+                            </div>
+                            <div class="btn-small">BKD 商城白皮书-中文.pdf</div>
+                            <div class="btn-small">
+                                CN
+                            </div>
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div>
+                    <link href="/css/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
+                    <style type="text/css">
+                        #mc_embed_signup {
+                            clear: left;
+                            font: 14px;
+                            width: 100%;
+                            margin-bottom: 100px;
+                            height: 64px
+                        }
+
+                            #mc_embed_signup #mce-EMAIL {
+                                height: 64px;
+                                -webkit-box-shadow: inset 8px 8px 8px 0px #d2d2d2;
+                                -moz-box-shadow: inset 8px 8px 8px 0px #d2d2d2;
+                                box-shadow: inset 8px 8px 8px 0px #d2d2d2;
+                            }
+
+                            #mc_embed_signup #mc-embedded-subscribe {
+                                background-color: #88CBF5;
+                                height: 64px;
+                                font-weight: 700;
+                            }
+                    </style>
+                    <style type="text/css">
+                        #mc-embedded-subscribe-form input[type=checkbox] {
+                            display: inline;
+                            width: auto;
+                            margin-right: 10px;
+                        }
+
+                        #mergeRow-gdpr {
+                            margin-top: 20px;
+                        }
+
+                            #mergeRow-gdpr fieldset label {
+                                font-weight: normal;
+                            }
+
+                        #mc-embedded-subscribe-form .mc_fieldset {
+                            border: none;
+                            min-height: 0px;
+                            padding-bottom: 0px;
+                        }
+                    </style>
+                   
+                </div>
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">@Localizer["Contact us"]</h2>
+                    <style>
+                        .cryptedmail:after {
+                            content: attr(data-name) "@@" attr(data-domain) "." attr(data-tld);
+                        }
+                    </style>
+                    <p class="large text-bright">
+                        @Localizer["You can contact Bitkanda project development team at"]
+
+                        <div style="margin:auto;">
+                            <a data-v-8ef46b5e="" href="https://twitter.com/Bitkanda" target="_blank" rel="noopener"><img data-v-8ef46b5e="" src="~/images/twitter_.png" alt=""></a>
+
+                            <a data-v-8ef46b5e="" href="https://t.me/joinchat/SrqCzFRwR_U0Njc1" target="_blank" rel="noopener"><img data-v-8ef46b5e="" src="~/images/telegram_.png" alt=""></a>
+
+                        </div>
+                        @*<a href="https://github.com/bitkanda/bitkanda/issues">=></a>*@
+                        @*<a data-name="contact" data-domain="bitkanda" data-tld="org" href="#" class="cryptedmail" onclick="window.location.href = 'mailto:' + this.dataset.name + '@@' + this.dataset.domain + '.' + this.dataset.tld"></a>*@
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <span class="copyright">Copyright &copy; 2019-@System.DateTime.Now.Year Bitkanda Project. All rights reserved.</span>
+                </div>
+                @*<div class="col-md-12">
+                        <ul class="list-inline social-buttons ">
+                            <li class=""><a href="https://twitter.com/LitecoinProject"><i class="fa fa-twitter"></i></a></li>
+                            <li class=""><a href="https://t.me/Litecoin"><i class="fa fa-send"></i></a></li>
+                            <li class=""><a href="https://www.reddit.com/r/litecoin/"><i class="fa fa-reddit-alien"></i></a></li>
+                        </ul>
+                    </div>*@
+            </div>
+        </div>
+    </footer>
+
+    @*<script data-cfasync="false" src="/js/email-decode.min.js"></script>*@
+    <script src="~/js/jquery.js"></script>
+
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/jquery.easing.min.js"></script>
+    <script src="~/js/jquery.browser.min.js"></script>
+    <script src="~/js/classie.js"></script>
+    <script src="~/js/cbpAnimatedHeader.js"></script>
+
+    <script src="~/js/agency.js"></script>
+    <script type="application/javascript">
+        @*var doNotTrack = false;
+        if (!doNotTrack) {
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-131796934-2', 'auto');
+
+            ga('send', 'pageview');
+        }*@
+    </script>
+</body>
+</html>

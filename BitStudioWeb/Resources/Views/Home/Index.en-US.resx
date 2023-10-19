@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Based on Blockchain Technology" xml:space="preserve">
+    <value>Based on neural network technology.</value>
+  </data>
+  <data name="Bitkanda is" xml:space="preserve">
+    <value>Neural networks are computational models that mimic the workings of the human nervous system. They consist of many simple nodes, called neurons, which are interconnected by rules. These neurons and their connections can be thought of as a graph, called a neural network. This network can be trained to perform various tasks, such as classification, recognition, prediction, etc. Neural networks can be applied to various fields, such as computer vision, natural language processing, speech recognition, machine translation, etc.</value>
+  </data>
+  <data name="Bitkanda issues" xml:space="preserve">
+    <value>BitStudio issues</value>
+  </data>
+  <data name="Blockchain" xml:space="preserve">
+    <value>System Architecture</value>
+  </data>
+  <data name="BlockchainDesc" xml:space="preserve">
+    <value>As an AI language model, chatgpt utilizes a neural network based on the Transformer architecture. Specifically, it employs a model similar to GPT-2 (Generative Pre-trained Transformer 2), which consists of multiple layers of Transformer encoders and decoders, as well as self-attention mechanisms. This architecture is highly effective for generating natural language text, as it can capture the structure and patterns of language through learning from vast amounts of language data, and generate outputs that resemble human natural language.</value>
+  </data>
+  <data name="Community" xml:space="preserve">
+    <value>Community</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Contact us" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="Find support across a growing number of Bitkanda communities:" xml:space="preserve">
+    <value>You can seek technical support and share ideas in the growing community, for example:</value>
+  </data>
+  <data name="Mining Reward" xml:space="preserve">
+    <value>Efficient Writing</value>
+  </data>
+  <data name="Mining Reward Desc" xml:space="preserve">
+    <value>Tips for efficient writing:\n1. Define your writing goals: Before starting, you should know what you want to write and who your audience is. This can help you decide which model of assistant to use and how to write your input.\n2. Prepare your input: Your assistant's input should be as clear and specific as possible so that the model can better understand your intent. You can provide some keywords, questions, or context to help the assistant better understand your topic.\n3. Use the generated text: The text generated by the assistant may not be perfect, but it can serve as the basis for further creativity. You can choose to change, edit, or expand the generated text to create your own text.\n4. Review carefully: The assistant may generate some inappropriate text, so please review them carefully before using the generated text from the assistant. You should confirm that they are appropriate, accurate, and smooth.</value>
+  </data>
+  <data name="Open Source Software" xml:space="preserve">
+    <value>Open Source Software</value>
+  </data>
+  <data name="Open Source Software Desc" xml:space="preserve">
+    <value>BitStudio AI Assistant is an open source software project released under the MIT/X11 license which gives you the power to run, modify, and copy the software and to distribute, at your option, modified copies of the software. The software is released in a transparent process that allows for independent verification of binaries and their corresponding source code.</value>
+  </data>
+  <data name="Other versions" xml:space="preserve">
+    <value>Other versions</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>Release Notes</value>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="ResourcesDesc" xml:space="preserve">
+    <value>By checking the BitStudio Wiki on &lt;a href="https://github.com/bitkanda/bitkanda/wiki"&gt;GitHub&lt;/a&gt;, you can access information about BitStudio and view all devices that support it. Additionally, visit &lt;a href="https://github.com/bitkanda/BitStudio"&gt;GitHub.com/BitStudio&lt;/a&gt; to obtain the source code and related projects for BitStudio.</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="The Cryptocurrency For Payments" xml:space="preserve">
+    <value>BitStudio Artificial Intelligence Assistant</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>BitStudio - An artificial intelligence assistant based on neural networks.</value>
+  </data>
+  <data name="Upgrade Notes" xml:space="preserve">
+    <value>Upgrade Notes</value>
+  </data>
+  <data name="Wallet Encryption" xml:space="preserve">
+    <value>The Uses of AI Assistants</value>
+  </data>
+  <data name="Wallet EncryptionDesc" xml:space="preserve">
+    <value>1. Connect with people: can be used to connect with people from all over the world, whether it's to make new friends or to maintain existing relationships.&lt;br&gt;
+2. Seek advice: can be a useful tool for seeking advice on a wide range of topics, from relationship issues to career advice.&lt;br&gt;
+3. Entertainment: can be a source of entertainment, whether it's through playing games or engaging in lighthearted conversation.&lt;br&gt;
+4. Language practice: For those learning a new language, can be a great way to practice their skills in a real-world setting.&lt;br&gt;
+5. Business communication: can be used for business communication, such as discussing projects, scheduling meetings, and collaborating with colleagues.&lt;br&gt;
+6. Mental health support: can be a valuable resource for those seeking mental health support, whether it's through connecting with a therapist or joining a support group.&lt;br&gt;
+7. Learning: can be a tool for learning, whether it's through asking questions or engaging in discussions with knowledgeable individuals.</value>
+  </data>
+  <data name="What is Bitkanda?" xml:space="preserve">
+    <value>What is a neural network?</value>
+  </data>
+  <data name="You can contact Bitkanda project development team at" xml:space="preserve">
+    <value>You can contact BitStudio project development team at</value>
+  </data>
+  <data name="bit" xml:space="preserve">
+    <value>bit</value>
+  </data>
+  <data name="logoName" xml:space="preserve">
+    <value>BitStudio</value>
+  </data>
+</root>
