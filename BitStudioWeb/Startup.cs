@@ -37,6 +37,7 @@ namespace bitkanda
         {
             services.Configure<NethereumFaucet.FaucetSettings>(Configuration.GetSection("Faucet"));
             services.AddSingleton(typeof(VerificationCodeAESHelp));
+            services.AddDbContext<bitkanda.Dal.MysqlDBContext>();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
