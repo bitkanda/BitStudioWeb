@@ -24,50 +24,23 @@ namespace BitStudioWeb.Controllers
         [HttpPost("generate")]
         public IActionResult GenerateToken(string mobile)
         {
-            var tokenSecret = _configuration["TokenSecret"];
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(tokenSecret);
-            var Expires = DateTime.UtcNow.AddDays(7); // 设置Token的过期时间
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-            new Claim(ClaimTypes.Name, mobile) // 根据你的需求添加其他Claim
-                }),
-                Expires = Expires,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            DateTime Expires;
+            string tokenString;
+            TokenHepler.GenerateTokenModel(_configuration,mobile, out Expires, out tokenString);
 
-            return Ok(new { token = tokenString, expires= Expires.ToString("yyyy-MM-dd HH:mm:ss") });
+            return Ok(new { token = tokenString, expires = Expires.ToString("yyyy-MM-dd HH:mm:ss") });
         }
+
+
 
         [HttpPost("verify")]
   
         public IActionResult VerifyToken([FromBody] TokenRequest request)
         {
-            var tokenSecret = _configuration["TokenSecret"];
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(tokenSecret);
-
             try
             {
-                var validationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true
-                };
-
-                SecurityToken validatedToken;
-                ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(request.Token, validationParameters, out validatedToken);
-
-                var expirationDate = ((JwtSecurityToken)validatedToken).ValidTo.ToString("yyyy-MM-dd HH:mm:ss");
-
-                if (claimsPrincipal.Identity.IsAuthenticated)
+                var (IsAuthenticated, expirationDate) = TokenHepler.VerifyTokenModel(_configuration,request);
+                if (IsAuthenticated)
                 {
                     return Ok(new { expiredAt = expirationDate, isValid = true });
                 }
@@ -80,12 +53,16 @@ namespace BitStudioWeb.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
+           
         }
 
+    
         [Authorize]
         [HttpPost("test")]
         public ActionResult Test()
         {
+            // 获取当前用户的标识
+            var userIdentity = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(new { result= "Authorize" });
         }
 

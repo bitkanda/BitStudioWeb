@@ -104,6 +104,7 @@ namespace bitkanda
                 { ".dmg","application/x-dmg"},
                 { ".apk","application/vnd.android.package-archive"},
                 { ".xz","application/x-xz"},
+
             })
 });
             app.UseCookiePolicy();
@@ -132,6 +133,9 @@ namespace bitkanda
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+               
+
             });
             //app.UseMvc(routes =>
             //{

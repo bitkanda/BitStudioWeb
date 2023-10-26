@@ -42,6 +42,12 @@ namespace bitkanda.Dal
         public long ID { get; set; }
         public string PhoneNumber { get; set; }
         public string SmsCode { get; set; }
+
+        /// <summary>
+        /// 上次发送验证码时间。
+        /// </summary>
+        public DateTime LastSendSmsTime { get; set; }
+        public string IP { get; set; }
         public string AuthToken { get; set; }
         public DateTime ExpirationTime { get; set; }
 
