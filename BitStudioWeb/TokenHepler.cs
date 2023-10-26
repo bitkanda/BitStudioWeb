@@ -22,7 +22,8 @@ namespace BitStudioWeb
             {
                 Subject = new ClaimsIdentity(new Claim[]
 {
-            new Claim(ClaimTypes.Name, mobile) // 根据你的需求添加其他Claim
+            new Claim(ClaimTypes.NameIdentifier, mobile), // 根据你的需求添加其他Claim
+
 }),
                 Expires = Expires,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
