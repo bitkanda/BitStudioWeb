@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +17,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using VerificationCode.Code;
 
 namespace bitkanda
@@ -34,6 +37,7 @@ namespace bitkanda
         {
             services.Configure<NethereumFaucet.FaucetSettings>(Configuration.GetSection("Faucet"));
             services.AddSingleton(typeof(VerificationCodeAESHelp));
+            services.AddDbContext<bitkanda.Dal.MysqlDBContext>();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -56,8 +60,21 @@ namespace bitkanda
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-    
-
+            // 添加Bearer Token授权服务
+            var tokenSecret = Configuration["TokenSecret"];
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSecret)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true
+                    };
+                });
+            // 添加Bearer Token授权服务 结束。
 
         }
 
@@ -87,6 +104,7 @@ namespace bitkanda
                 { ".dmg","application/x-dmg"},
                 { ".apk","application/vnd.android.package-archive"},
                 { ".xz","application/x-xz"},
+
             })
 });
             app.UseCookiePolicy();
@@ -106,12 +124,18 @@ namespace bitkanda
             });
 
             app.UseRouting();
-
+            //添加权限 bearer token
+            app.UseAuthentication();
+            app.UseAuthorization();
+            //添加权限
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+               
+
             });
             //app.UseMvc(routes =>
             //{

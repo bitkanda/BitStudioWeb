@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bitkanda.Dal;
 
 namespace bitkanda.Migrations
 {
     [DbContext(typeof(MysqlDBContext))]
-    partial class MysqlDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231022174447_InitialCreateUser")]
+    partial class InitialCreateUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,12 +66,6 @@ namespace bitkanda.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IP")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastSendSmsTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
