@@ -1,0 +1,378 @@
+﻿CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" TEXT NOT NULL CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY,
+    "ProductVersion" TEXT NOT NULL
+);
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "AirDropTrans" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_AirDropTrans" PRIMARY KEY AUTOINCREMENT,
+    "Address" varchar(60) NULL,
+    "TxnHash" varchar(80) NULL,
+    "TokenAmount" varchar(100) NULL,
+    "AddDTM" varchar(50) NULL,
+    "Message" TEXT NULL,
+    "IsSuccess" INTEGER NOT NULL,
+    "SourceAddress" varchar(60) NULL,
+    "ActivityCode" varchar(60) NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20210528154203_airdrop', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "Users" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY AUTOINCREMENT,
+    "PhoneNumber" TEXT NULL,
+    "SmsCode" TEXT NULL,
+    "AuthToken" TEXT NULL,
+    "ExpirationTime" TEXT NOT NULL,
+    "AddTime" TEXT NOT NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231022174447_InitialCreateUser', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Users" ADD "IP" TEXT NULL;
+
+ALTER TABLE "Users" ADD "LastSendSmsTime" TEXT NOT NULL DEFAULT '0001-01-01 00:00:00';
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231024171547_userinfo', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "AirOrders" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_AirOrders" PRIMARY KEY AUTOINCREMENT,
+    "UserId" INTEGER NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "Info" varchar(1000) NULL,
+    "IsPay" INTEGER NOT NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "CreateTime" TEXT NOT NULL,
+    "PayTime" TEXT NOT NULL
+);
+
+CREATE TABLE "AirProducts" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_AirProducts" PRIMARY KEY AUTOINCREMENT,
+    "Title" varchar(100) NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "ImgUrl" varchar(60) NULL,
+    "Description" varchar(1000) NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231103150752_addorder_product', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "AirOrders";
+
+DROP TABLE "AirProducts";
+
+CREATE TABLE "Orders" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Orders" PRIMARY KEY AUTOINCREMENT,
+    "UserId" INTEGER NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "Info" varchar(1000) NULL,
+    "IsPay" INTEGER NOT NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "CreateTime" TEXT NOT NULL,
+    "PayTime" TEXT NOT NULL
+);
+
+CREATE TABLE "Products" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Products" PRIMARY KEY AUTOINCREMENT,
+    "Title" varchar(100) NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "ImgUrl" varchar(60) NULL,
+    "Description" varchar(1000) NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231104082245_rename', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Products" ADD "typeId" INTEGER NOT NULL DEFAULT 0;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105032604_addcolumn', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Products" RENAME COLUMN "typeId" TO "TypeId";
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105032801_renamecolumn', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Orders" ADD "TypeId" INTEGER NOT NULL DEFAULT 0;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105042305_addcoltypeid', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_Orders" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Orders" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" TEXT NOT NULL,
+    "Info" varchar(1000) NULL,
+    "IsPay" INTEGER NULL,
+    "PayTime" TEXT NOT NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "TypeId" INTEGER NOT NULL,
+    "UserId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Orders" ("ID", "CreateTime", "Info", "IsPay", "PayTime", "Price", "ProductId", "TypeId", "UserId")
+SELECT "ID", "CreateTime", "Info", "IsPay", "PayTime", "Price", "ProductId", "TypeId", "UserId"
+FROM "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Orders";
+
+ALTER TABLE "ef_temp_Orders" RENAME TO "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105043539_recolisempty', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_Products" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Products" PRIMARY KEY AUTOINCREMENT,
+    "Description" varchar(1000) NULL,
+    "ImgUrl" varchar(60) NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "Title" varchar(100) NOT NULL,
+    "TypeId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Products" ("ID", "Description", "ImgUrl", "Price", "Title", "TypeId")
+SELECT "ID", "Description", "ImgUrl", "Price", IFNULL("Title", ''), "TypeId"
+FROM "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Products";
+
+ALTER TABLE "ef_temp_Products" RENAME TO "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105094457_addRequired', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ProductSkus" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_ProductSkus" PRIMARY KEY AUTOINCREMENT,
+    "Name" varchar(100) NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "Price" TEXT NOT NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105133406_addProductSku', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_ProductSkus" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_ProductSkus" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Name" varchar(100) NOT NULL,
+    "Price" TEXT NOT NULL,
+    "ProductId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_ProductSkus" ("ID", "CreateTime", "Name", "Price", "ProductId")
+SELECT "ID", "CreateTime", "Name", "Price", "ProductId"
+FROM "ProductSkus";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "ProductSkus";
+
+ALTER TABLE "ef_temp_ProductSkus" RENAME TO "ProductSkus";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105140752_addCol_PSku_CreateTime', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_ProductSkus" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_ProductSkus" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Name" varchar(100) NOT NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "ProductId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_ProductSkus" ("ID", "CreateTime", "Name", "Price", "ProductId")
+SELECT "ID", "CreateTime", "Name", "Price", "ProductId"
+FROM "ProductSkus";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "ProductSkus";
+
+ALTER TABLE "ef_temp_ProductSkus" RENAME TO "ProductSkus";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105141202_changeCol_PSku_Price', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_Orders" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Orders" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Info" varchar(1000) NULL,
+    "IsPay" INTEGER NULL,
+    "PayTime" DateTime NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "TypeId" INTEGER NOT NULL,
+    "UserId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Orders" ("ID", "CreateTime", "Info", "IsPay", "PayTime", "Price", "ProductId", "TypeId", "UserId")
+SELECT "ID", "CreateTime", "Info", "IsPay", "PayTime", "Price", "ProductId", "TypeId", "UserId"
+FROM "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Orders";
+
+ALTER TABLE "ef_temp_Orders" RENAME TO "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105142158_changeCol_CreateTime', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Products" ADD "CreateTime" DateTime NOT NULL DEFAULT (datetime());
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105143606_changeCol_CreateTime2', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "ef_temp_Products" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Products" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Description" varchar(1000) NULL,
+    "ImgUrl" varchar(60) NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "Title" varchar(100) NOT NULL,
+    "TypeId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Products" ("ID", "CreateTime", "Description", "ImgUrl", "Price", "Title", "TypeId")
+SELECT "ID", "CreateTime", "Description", "ImgUrl", "Price", "Title", "TypeId"
+FROM "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Products";
+
+ALTER TABLE "ef_temp_Products" RENAME TO "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231105144158_changeCol_CreateTime3', '5.0.17');
+
+COMMIT;
+
