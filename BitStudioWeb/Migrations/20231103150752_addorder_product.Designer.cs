@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bitkanda.Dal;
 
 namespace bitkanda.Migrations
 {
     [DbContext(typeof(MysqlDBContext))]
-    partial class MysqlDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231103150752_addorder_product")]
+    partial class addorder_product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,25 +53,23 @@ namespace bitkanda.Migrations
                     b.ToTable("AirDropTrans");
                 });
 
-            modelBuilder.Entity("bitkanda.Dal.Order", b =>
+            modelBuilder.Entity("bitkanda.Dal.AirOrder", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("datetime()");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Info")
                         .HasColumnType("varchar(1000)");
 
-                    b.Property<bool?>("IsPay")
+                    b.Property<bool>("IsPay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("PayTime")
-                        .HasColumnType("DateTime");
+                    b.Property<DateTime>("PayTime")
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
@@ -77,27 +77,19 @@ namespace bitkanda.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("AirOrders");
                 });
 
-            modelBuilder.Entity("bitkanda.Dal.Product", b =>
+            modelBuilder.Entity("bitkanda.Dal.AirProduct", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("datetime()");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(1000)");
@@ -109,41 +101,11 @@ namespace bitkanda.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("varchar(100)");
-
-                    b.Property<int>("TypeId")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("bitkanda.Dal.ProductSku", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("datetime()");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ProductSkus");
+                    b.ToTable("AirProducts");
                 });
 
             modelBuilder.Entity("bitkanda.Dal.User", b =>

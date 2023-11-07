@@ -13,14 +13,14 @@ namespace bitkanda.Dal
         [Key]
         public long ID { get; set; }
 
-        [Column(TypeName = "varchar(60)")] 
+        [Column(TypeName = "varchar(60)")]
         public string Address { get; set; }
 
         [Column(TypeName = "varchar(80)")]
         public string TxnHash { get; set; }
 
         [Column(TypeName = "varchar(100)")]
-        public string TokenAmount{get;set;}
+        public string TokenAmount { get; set; }
 
         [Column(TypeName = "varchar(50)")]
         public string AddDTM { get; set; }
@@ -54,6 +54,79 @@ namespace bitkanda.Dal
         public DateTime AddTime { get; set; }
 
     }
+
+    public class ProductSku
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        public long ID { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Name { get; set; }
+        
+        public long ProductId { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Price { get; set; }
+
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+    }
+
+    public class Product
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        public long ID { get; set; }
+
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Title { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Price { get; set; }
+        [Required]
+        public int TypeId { get; set; }
+
+        [Column(TypeName = "varchar(60)")]
+        public string ImgUrl { get; set; }
+
+        [Column(TypeName = "varchar(1000)")]
+        public string Description { get; set; }
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+
+         
+    }
+
+    public class Order
+    {
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { get; set; }
+
+        public long UserId { get; set; }
+
+        public long ProductId { get; set; }
+
+        public int TypeId { get; set; }
+
+        [Column(TypeName = "varchar(1000)")]
+        public string Info { get; set; }
+
+        public bool? IsPay { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Price { get; set; }
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+        [Column(TypeName = "DateTime")]
+        public DateTime? PayTime { get; set; }
+
+    }
     public class MysqlDBContext: DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -67,9 +140,18 @@ namespace bitkanda.Dal
         {
             modelBuilder.Entity<AirDropTran>();
             modelBuilder.Entity<User>();
+            modelBuilder.Entity<Order>().Property(e => e.CreateTime).HasDefaultValueSql("datetime()");
+            modelBuilder.Entity<Product>().Property(e => e.CreateTime).HasDefaultValueSql("datetime()");
+            modelBuilder.Entity<ProductSku>().Property(e=>e.CreateTime).HasDefaultValueSql("datetime()");
         }
         public DbSet<AirDropTran> AirDropTrans { get; set; }
 
-        public DbSet<User> Users { get; set; }  
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductSku> ProductSkus { get; set; }
     }
 }

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bitkanda.Dal;
 
 namespace bitkanda.Migrations
 {
     [DbContext(typeof(MysqlDBContext))]
-    partial class MysqlDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231105140752_addCol_PSku_CreateTime")]
+    partial class addCol_PSku_CreateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,9 +60,7 @@ namespace bitkanda.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("datetime()");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Info")
                         .HasColumnType("varchar(1000)");
@@ -68,8 +68,8 @@ namespace bitkanda.Migrations
                     b.Property<bool?>("IsPay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("PayTime")
-                        .HasColumnType("DateTime");
+                    b.Property<DateTime>("PayTime")
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
@@ -93,11 +93,6 @@ namespace bitkanda.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("datetime()");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(1000)");
@@ -136,7 +131,7 @@ namespace bitkanda.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("TEXT");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("INTEGER");
