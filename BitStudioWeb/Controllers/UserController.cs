@@ -126,6 +126,7 @@ namespace BitStudioWeb.Controllers
         [HttpPost("VerifyAuthToken")]
         public ActionResult VerifyAuthToken(string phoneNumber, string authToken)
         {
+
             // 从数据库中获取保存的登录凭证和过期时间
             User user = GetAuthTokenFromDatabase(phoneNumber);
 
