@@ -1,0 +1,152 @@
+﻿@model BitStudioWeb.Models.VerificationModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    #divContainer {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+}
+
+
+
+.input-control {
+    flex: 1; /* 控件自动填充剩余空间 */
+    margin-right: 10px; /* 可选：为控件之间添加一些间距 */
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+
+    //function MobileMsg(error)
+    //{
+    //          var i=document.getElementById("PhoneNumber-error");
+    //            if(i!=undefined)
+    //            {
+    //             i.style.display = "block";
+
+    //               i.textContent = error; // 设置显示的文本内容为传入的 error 参数
+    //            }
+
+    //            return;
+    //}
+
+    function MobileMsg(error) {
+    var errorElement = document.getElementById("PhoneNumber-error");
+    if (errorElement === undefined || errorElement === null) {
+        errorElement = document.querySelector('[data-valmsg-for="PhoneNumber"]');
+        errorElement.innerHTML = '<span id="PhoneNumber-error" class="" style="display:none">'+error+'</span>';
+    } else {
+        errorElement.style.display = "block";
+        errorElement.textContent = error; // 设置显示的文本内容为传入的 error 参数
+    }
+    return;
+}
+
+    $(document).ready(function () {
+        $("#sendVerificationCode").click(function (event) {
+               event.preventDefault(); // 阻止按钮的默认提交行为
+            var phoneNumber = $("#PhoneNumber").val();
+                  var btn = $(this);
+
+                  // 定义手机号的正则表达式
+var phoneNumberRegex = /^1[3456789]\d{9}$/;
+
+                   
+            if ((phoneNumber === "")||!phoneNumberRegex.test(phoneNumber) ){
+                //显示错误。
+                   var i=document.getElementById("PhoneNumber-error");
+                if(i!=undefined)
+                 i.style.display = "block";
+                return;
+            }
+            else
+            {
+                //不显示错误。
+                var i=document.getElementById("PhoneNumber-error");
+                if(i!=undefined)
+                i.style.display = "none";
+            }
+
+
+            btn.prop('disabled', true); // 禁用按钮
+
+            $.ajax({
+                url: '/api/User/GetSmsCode?phoneNumber='+ phoneNumber,
+                type: 'POST',
+                data: {  },
+                success: function (result) {
+                    if(result.success)
+                    {
+                                    // 发送成功后倒计时
+                    var count = 60;
+                    var countdown = setInterval(function () {
+                        btn.text('倒计时 ' + count + ' 秒后再发送'); // 更新按钮文本
+                        count--;
+                        if (count == 0) {
+                            clearInterval(countdown);
+                            btn.text('发送验证码').prop('disabled', false); // 恢复按钮
+                        }
+                    }, 1000); // 每秒更新一次
+
+                    }
+                    else
+                    {
+                         btn.text('发送验证码').prop('disabled', false); // 恢复按钮
+                         MobileMsg(result.message);
+                         // alert(result.message);
+                    }
+         
+                  
+                },
+                error: function () {
+                     btn.prop('disabled', false); // 发送失败时恢复按钮
+                    alert('发送验证码失败');
+                }
+            });
+        });
+    });
+</script>
+
+<h2>Index</h2>
+
+<h4>登陆</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <div id="divContainer"> 
+                <input asp-for="PhoneNumber" class="form-control input-control" />
+                 <button id="sendVerificationCode" class="btn btn-default input-control" >发送验证码</button>
+                 <span class="text-danger field-validation-error" data-valmsg-for="PhoneNumber" data-valmsg-replace="true">
+<span id="PhoneNumber-error" class="" style="display:none">手机号码是必填的</span>
+</span>
+                  </div>
+              
+           @*     <span asp-validation-for="PhoneNumber" class="text-danger"></span>*@
+                    <br />
+                 <label asp-for="Code" class="control-label"></label>
+                <input asp-for="Code" class="form-control" />
+                  <span asp-validation-for="Code" class="text-danger"></span>
+               
+            </div>
+            <div class="form-group">
+                <input type="submit" value="登陆" class="btn btn-default" />
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
