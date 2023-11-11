@@ -1,7 +1,9 @@
 ﻿using BitStudioWeb.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -10,6 +12,18 @@ namespace BitStudioWeb
 {
     public class TokenHepler
     {
+        public static ClaimsPrincipal GetClaimsIdentity(string phoneNumber)
+        {
+            var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.NameIdentifier, phoneNumber)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            return principal;
+        }
+
         public static void GenerateTokenModel(IConfiguration _configuration, string mobile,
     out DateTime Expires, out string tokenString)
         {

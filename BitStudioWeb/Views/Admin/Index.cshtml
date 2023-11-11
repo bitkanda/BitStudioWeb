@@ -13,8 +13,9 @@
 
 
 .input-control {
-    flex: 1; /* 控件自动填充剩余空间 */
+    /*flex: 1;  控件自动填充剩余空间 */
     margin-right: 10px; /* 可选：为控件之间添加一些间距 */
+    width:200px;
 }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -37,7 +38,7 @@
     var errorElement = document.getElementById("PhoneNumber-error");
     if (errorElement === undefined || errorElement === null) {
         errorElement = document.querySelector('[data-valmsg-for="PhoneNumber"]');
-        errorElement.innerHTML = '<span id="PhoneNumber-error" class="" style="display:none">'+error+'</span>';
+        errorElement.innerHTML = '<span id="PhoneNumber-error" class="" style="display:block">'+error+'</span>';
     } else {
         errorElement.style.display = "block";
         errorElement.textContent = error; // 设置显示的文本内容为传入的 error 参数
@@ -114,15 +115,15 @@ var phoneNumberRegex = /^1[3456789]\d{9}$/;
 
 <h4>登陆</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="">@*row*@
+    <div class="">@*col-md-4*@
         <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <div id="divContainer"> 
-                <input asp-for="PhoneNumber" class="form-control input-control" />
-                 <button id="sendVerificationCode" class="btn btn-default input-control" >发送验证码</button>
+                <input asp-for="PhoneNumber" class="form-control   input-control" />
+                 <button id="sendVerificationCode" class="btn btn-default" >发送验证码</button>
                  <span class="text-danger field-validation-error" data-valmsg-for="PhoneNumber" data-valmsg-replace="true">
 <span id="PhoneNumber-error" class="" style="display:none">手机号码是必填的</span>
 </span>
@@ -131,7 +132,7 @@ var phoneNumberRegex = /^1[3456789]\d{9}$/;
            @*     <span asp-validation-for="PhoneNumber" class="text-danger"></span>*@
                     <br />
                  <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
+                <input asp-for="Code" class="form-control   input-control" />
                   <span asp-validation-for="Code" class="text-danger"></span>
                
             </div>
