@@ -9,6 +9,7 @@ using System.Security.Claims;
 
 namespace BitStudioWeb.Controllers
 {
+   
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : Controller
@@ -160,12 +161,13 @@ namespace BitStudioWeb.Controllers
             return code.ToString();
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("GetUserInfo")]
         public ActionResult GetUserInfo()
         {
-            var userIdentity = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = GetAuthTokenFromDatabase(userIdentity);
+            string phoneNumber = HttpContext.User.Identity.Name;
+            //var userIdentity = User.FindFirst(phoneNumber)?.Value;
+            var user = GetAuthTokenFromDatabase(phoneNumber);
             return Json(user);
         }
 

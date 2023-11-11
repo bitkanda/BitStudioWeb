@@ -137,6 +137,18 @@
                     <li>
                         <a class="page-scroll" href="#contact">@Localizer["Contact"]</a>
                     </li>
+
+                      @if(User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-area="" asp-controller="Admin" asp-action="Details">我的信息</a></li>
+                         <li  style="margin-left: auto;"><a asp-area="" asp-controller="Admin" asp-action="Logout">注销</a></li>
+                    }
+                    else
+                    {
+                         <li  style="margin-left: auto;"><a asp-area="" asp-controller="Admin" asp-action="Index">登陆</a></li>
+                    }
+
+                 
                     @*<li>
                         <a class="page-scroll" href="/faucet/index">Air Drop</a>
                     </li>

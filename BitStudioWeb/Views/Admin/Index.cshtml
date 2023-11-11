@@ -1,7 +1,7 @@
 ﻿@model BitStudioWeb.Models.VerificationModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "登陆";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style type="text/css">
@@ -9,7 +9,12 @@
     display: flex;
     align-items: center; /* 垂直居中对齐 */
 }
-
+.field-validation-error {
+    color: red;
+}
+.validation-summary-errors {
+    color: red;
+}
 
 
 .input-control {
@@ -38,7 +43,7 @@
     var errorElement = document.getElementById("PhoneNumber-error");
     if (errorElement === undefined || errorElement === null) {
         errorElement = document.querySelector('[data-valmsg-for="PhoneNumber"]');
-        errorElement.innerHTML = '<span id="PhoneNumber-error" class="" style="display:block">'+error+'</span>';
+        errorElement.innerHTML = '<span id="PhoneNumber-error" class="field-validation-error" style="display:block">'+error+'</span>';
     } else {
         errorElement.style.display = "block";
         errorElement.textContent = error; // 设置显示的文本内容为传入的 error 参数
@@ -61,6 +66,12 @@ var phoneNumberRegex = /^1[3456789]\d{9}$/;
                    var i=document.getElementById("PhoneNumber-error");
                 if(i!=undefined)
                  i.style.display = "block";
+                 else
+                 {
+                     var error='请输入有效的手机号码!';
+                     var i = document.querySelector('[data-valmsg-for="PhoneNumber"]');
+                     i.innerHTML = '<span id="PhoneNumber-error" class="field-validation-error" style="display:block">'+error+'</span>';
+                 }
                 return;
             }
             else
@@ -113,27 +124,33 @@ var phoneNumberRegex = /^1[3456789]\d{9}$/;
 
 <h2>Index</h2>
 
-<h4>登陆</h4>
+<h4>用户登陆</h4>
 <hr />
 <div class="">@*row*@
     <div class="">@*col-md-4*@
         <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+               
+                    
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <div id="divContainer"> 
                 <input asp-for="PhoneNumber" class="form-control   input-control" />
                  <button id="sendVerificationCode" class="btn btn-default" >发送验证码</button>
-                 <span class="text-danger field-validation-error" data-valmsg-for="PhoneNumber" data-valmsg-replace="true">
+                 @Html.ValidationMessageFor(m => m.PhoneNumber)
+@*                 <span class="text-danger field-validation-error" data-valmsg-for="PhoneNumber" data-valmsg-replace="true">
 <span id="PhoneNumber-error" class="" style="display:none">手机号码是必填的</span>
-</span>
+</span>*@
                   </div>
               
            @*     <span asp-validation-for="PhoneNumber" class="text-danger"></span>*@
                     <br />
                  <label asp-for="Code" class="control-label"></label>
+                  <div id="divContainer"> 
                 <input asp-for="Code" class="form-control   input-control" />
-                  <span asp-validation-for="Code" class="text-danger"></span>
+                @Html.ValidationMessageFor(m => m.Code)
+               </div>
+                 @* <span asp-validation-for="Code" class="text-danger"></span>*@
                
             </div>
             <div class="form-group">

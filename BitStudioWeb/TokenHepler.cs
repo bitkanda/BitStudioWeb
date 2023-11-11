@@ -15,9 +15,10 @@ namespace BitStudioWeb
         public static ClaimsPrincipal GetClaimsIdentity(string phoneNumber)
         {
             var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.NameIdentifier, phoneNumber)
-            };
+        {
+            new Claim(ClaimTypes.Name, phoneNumber)
+        };
+
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -36,7 +37,7 @@ namespace BitStudioWeb
             {
                 Subject = new ClaimsIdentity(new Claim[]
 {
-            new Claim(ClaimTypes.NameIdentifier, mobile), // 根据你的需求添加其他Claim
+            new Claim(ClaimTypes.Name, mobile), // 根据你的需求添加其他Claim
 
 }),
                 Expires = Expires,

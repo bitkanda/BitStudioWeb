@@ -38,8 +38,10 @@ namespace bitkanda.Dal
     }
     public class User
     {
+        [Display(Name = "用户ID")]
         [Key]
         public long ID { get; set; }
+        [Display(Name = "手机号")]
         public string PhoneNumber { get; set; }
         public string SmsCode { get; set; }
 
@@ -47,10 +49,11 @@ namespace bitkanda.Dal
         /// 上次发送验证码时间。
         /// </summary>
         public DateTime LastSendSmsTime { get; set; }
+        [Display(Name = "最近一次登陆IP")]
         public string IP { get; set; }
         public string AuthToken { get; set; }
         public DateTime ExpirationTime { get; set; }
-
+        [Display(Name = "注册时间")]
         public DateTime AddTime { get; set; }
 
     }

@@ -2,6 +2,7 @@
 using BitStudioWeb.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -45,29 +46,52 @@ namespace BitStudioWeb.Controllers
             
             _dbContext.SaveChanges();
         }
-
+     
         [HttpPost]
         public async Task<IActionResult> Index(VerificationModel model)
         {
+            if(model==null)
+            {
+                ModelState.AddModelError("PhoneNumber", "手机号错误！");
+                goto Check;
+            }
+
+             
+
             // 从数据库中获取保存的验证码
             var saved = GetSmsCodeFromDatabase(model.PhoneNumber);
+
+            if (saved == null)
+            {
+                ModelState.AddModelError("PhoneNumber", "请点击获取验证码！");
+                goto Check;
+            }
+
             var savedSmsCode = saved?.SmsCode;
+
+            if (string.IsNullOrWhiteSpace(savedSmsCode))
+            {
+                ModelState.AddModelError("Code", "验证码没有发送成功，请联系客服！");
+                goto Check;
+            }
 
             if (model.Code.ToString()  == savedSmsCode)
             {
                 var sendCodeTime = saved.LastSendSmsTime;
                 if (DateTime.UtcNow.Subtract(sendCodeTime).TotalSeconds > 60)
                 {
-                    ModelState.AddModelError("Code", "验证码过期，请重新获取！"); 
+                    ModelState.AddModelError("Code", "验证码过期，请重新获取！");
+                    goto Check;
                 }
                 
             }
             else
             {
-                ModelState.AddModelError("PhoneNumber", "验证码或手机号错误！"); 
+                ModelState.AddModelError("PhoneNumber", "验证码错误！");
+                goto Check;
             }
 
-
+            Check:
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -78,13 +102,25 @@ namespace BitStudioWeb.Controllers
 
             var principal = TokenHepler.GetClaimsIdentity(model.PhoneNumber);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            return RedirectToAction("Details", "admin");
+        }
+
+
+       
+        [Authorize(AuthenticationSchemes = "Cookies")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
         // GET: AdminController/Details/5
-        public ActionResult Details(int id)
+        [Authorize(AuthenticationSchemes = "Cookies")]
+        public ActionResult Details()
         {
-            return View();
+            string phoneNumber = HttpContext.User.Identity.Name;
+            User user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == phoneNumber);
+            return View(user);
         }
 
         // GET: AdminController/Create

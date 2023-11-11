@@ -51,12 +51,7 @@ namespace bitkanda
                 o.ResourcesPath = "Resources";
             });
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-             .AddCookie(options =>
-             {
-                 options.LoginPath = "/admin/index";
-                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // 设置过期时间为30分钟
-             });
+       
 
 
             services.AddControllersWithViews()
@@ -84,7 +79,12 @@ namespace bitkanda
                     };
                 });
             // 添加Bearer Token授权服务 结束。
-
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/admin/index";
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // 设置过期时间为30分钟
+             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
