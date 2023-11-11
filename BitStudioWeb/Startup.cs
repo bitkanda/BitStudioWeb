@@ -116,7 +116,7 @@ namespace bitkanda
 
             })
 });
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
             IList<CultureInfo> supportedCultures = new List<CultureInfo>
             {
             new CultureInfo("en-US"),

@@ -23,7 +23,7 @@
     width:200px;
 }
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
 
     //function MobileMsg(error)
@@ -115,7 +115,7 @@ var phoneNumberRegex = /^1[3456789]\d{9}$/;
                 },
                 error: function () {
                      btn.prop('disabled', false); // 发送失败时恢复按钮
-                    alert('发送验证码失败');
+                       MobileMsg('发送验证码失败,请检查网络是否正常!'); 
                 }
             });
         });
