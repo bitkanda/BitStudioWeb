@@ -73,6 +73,9 @@ namespace BitStudioWeb.Controllers
                 }
             }
 
+            var role = TokenHepler.GetUserRole(_configuration, phoneNumber);
+            user.Role = role;
+
             // TODO: 调用发送短信的接口，将验证码发送到用户手机上
             var r = SmsHelper.SemdSmsCode(smsCode, phoneNumber,_configuration);
             if (r.StatusCode == 200 && r.Body != null && r.Body.Code == "OK")
@@ -107,10 +110,11 @@ namespace BitStudioWeb.Controllers
                 {
                     return Json(new { success = false, message = "验证码过期，请重新获取！" });
                 }
+                var role = TokenHepler.GetUserRole(_configuration, phoneNumber);
                 // 验证码正确，生成登录凭证和过期时间
                 DateTime Expires;
                 string authToken;
-                TokenHepler.GenerateTokenModel(_configuration, phoneNumber, out Expires, out authToken);
+                TokenHepler.GenerateTokenModel(_configuration, phoneNumber, out Expires, out authToken, role);
                  
                 // 将登录凭证和过期时间保存到数据库
                 SaveAuthTokenToDatabase(phoneNumber, authToken, Expires);
@@ -170,6 +174,25 @@ namespace BitStudioWeb.Controllers
             var user = GetAuthTokenFromDatabase(phoneNumber);
             return Json(user);
         }
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
+        [HttpPost("GetUserInfoUser")]
+        public ActionResult GetUserInfoUser()
+        {
+            string phoneNumber = HttpContext.User.Identity.Name;
+            //var userIdentity = User.FindFirst(phoneNumber)?.Value;
+            var user = GetAuthTokenFromDatabase(phoneNumber);
+            return Json(user);
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles =RoleConst.Admin)]
+        [HttpPost("GetUserInfoAdmin")]
+        public ActionResult GetUserInfoAdmin()
+        {
+            string phoneNumber = HttpContext.User.Identity.Name;
+            //var userIdentity = User.FindFirst(phoneNumber)?.Value;
+            var user = GetAuthTokenFromDatabase(phoneNumber);
+            return Json(user);
+        }
 
 
         private User GetSmsCodeFromDatabase(string phoneNumber)
@@ -192,6 +215,7 @@ namespace BitStudioWeb.Controllers
 
             user.AuthToken = authToken;
             user.ExpirationTime = expirationTime;
+            user.Role = TokenHepler.GetUserRole(_configuration, phoneNumber);
             _dbContext.SaveChanges();
         }
 

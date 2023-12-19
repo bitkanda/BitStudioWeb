@@ -75,7 +75,9 @@ namespace bitkanda
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSecret)),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        
+
                     };
                 });
             // 添加Bearer Token授权服务 结束。

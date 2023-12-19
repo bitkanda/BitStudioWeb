@@ -21,15 +21,15 @@ namespace BitStudioWeb.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("generate")]
-        public IActionResult GenerateToken(string mobile)
-        {
-            DateTime Expires;
-            string tokenString;
-            TokenHepler.GenerateTokenModel(_configuration,mobile, out Expires, out tokenString);
+        //[HttpPost("generate")]
+        //public IActionResult GenerateToken(string mobile)
+        //{
+        //    DateTime Expires;
+        //    string tokenString;
+        //    TokenHepler.GenerateTokenModel(_configuration,mobile, out Expires, out tokenString);
 
-            return Ok(new { token = tokenString, expires = Expires.ToString("yyyy-MM-dd HH:mm:ss") });
-        }
+        //    return Ok(new { token = tokenString, expires = Expires.ToString("yyyy-MM-dd HH:mm:ss") });
+        //}
 
 
 
@@ -57,14 +57,14 @@ namespace BitStudioWeb.Controllers
         }
 
     
-        [Authorize]
-        [HttpPost("test")]
-        public ActionResult Test()
-        {
-            // 获取当前用户的标识
-            var userIdentity = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(new { result= "Authorize" });
-        }
+        //[Authorize]
+        //[HttpPost("test")]
+        //public ActionResult Test()
+        //{
+        //    // 获取当前用户的标识
+        //    var userIdentity = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    return Ok(new { result= "Authorize" });
+        //}
 
     }
 }

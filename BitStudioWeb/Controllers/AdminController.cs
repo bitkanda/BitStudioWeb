@@ -49,25 +49,11 @@ namespace BitStudioWeb.Controllers
             {
 
             }
-            user.Role=GetUserRole(phoneNumber);
+            user.Role= TokenHepler.GetUserRole(_configuration,phoneNumber);
             _dbContext.SaveChanges();
         }
 
-        private string GetUserRole(string phoneNumber )
-        {
-            string result  = RoleConst.User; ;
-            var adminStr = _configuration["Admin"];
-            var Admin = new string[] { };
-            if (!string.IsNullOrWhiteSpace(adminStr))
-            {
-                Admin = adminStr.Split(",");
-            }
-            if (Admin.Contains(phoneNumber))
-                result = RoleConst.Admin;
-            else
-                result = RoleConst.User;
-            return result;
-        }
+      
 
         [HttpPost]
         public async Task<IActionResult> Index(VerificationModel model)
@@ -121,7 +107,7 @@ namespace BitStudioWeb.Controllers
 
             // 将登录凭证和过期时间保存到数据库
             SaveAuthTokenToDatabase(model.PhoneNumber);
-            var role=  GetUserRole(model.PhoneNumber);
+            var role= TokenHepler.GetUserRole(_configuration,model.PhoneNumber);
             var principal = TokenHepler.GetClaimsIdentity(model.PhoneNumber, role);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             return RedirectToAction("Details", "admin");
