@@ -1,4 +1,5 @@
-﻿using BitStudioWeb.Models;
+﻿using bitkanda.Dal;
+using BitStudioWeb.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -12,13 +13,20 @@ namespace BitStudioWeb
 {
     public class TokenHepler
     {
-        public static ClaimsPrincipal GetClaimsIdentity(string phoneNumber)
+        public static ClaimsPrincipal GetClaimsIdentity(string phoneNumber,string Role= "User")
         {
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, phoneNumber)
-        };
+            {
+                new Claim(ClaimTypes.Name, phoneNumber)
+            };
 
+            // 添加用户角色声明
+            claims.Add(new Claim(ClaimTypes.Role, Role)); // 设置用户的角色为 User
+            if(Role== RoleConst.Admin)
+            {
+                //管理员拥有所有角色。
+                claims.Add(new Claim(ClaimTypes.Role, RoleConst.User)); // 设置用户的角色为 User
+            }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);

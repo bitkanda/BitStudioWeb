@@ -56,6 +56,23 @@ namespace bitkanda.Dal
         [Display(Name = "注册时间")]
         public DateTime AddTime { get; set; }
 
+        [Display(Name = "角色")]
+        public string Role { get; set; }
+
+    }
+
+    public class RoleConst
+    {
+        /// <summary>
+        /// 普通用户
+        /// </summary>
+        public const string User = "User";
+
+        /// <summary>
+        /// 管理员
+        /// </summary>
+        public const string Admin = "Admin";
+
     }
 
     public class ProductSku

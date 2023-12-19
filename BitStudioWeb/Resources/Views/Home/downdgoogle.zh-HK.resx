@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>關於</value>
+  </data>
+  <data name="Based on Blockchain Technology" xml:space="preserve">
+    <value>基於區塊鏈技術</value>
+  </data>
+  <data name="Bitkanda is" xml:space="preserve">
+    <value>比坎達是一個區塊鏈中的國家，起源於漫威宇宙中的Wakanda,信仰豹神。比坎達系統是一個開源，完全去中心化設計。數學保證了網絡的安全，區塊鏈保證了公開透明，並使每個人能夠參與到國家治理，或者發起投票,每個人都可以參選最高領袖，最高領袖帶領社區發展，並每個月獲得一筆巨額的費用。比坎達系統保留了挖礦功能，礦工可以參與挖礦領取獎勵。</value>
+  </data>
+  <data name="Bitkanda issues" xml:space="preserve">
+    <value>比坎達課題</value>
+  </data>
+  <data name="Blockchain" xml:space="preserve">
+    <value>數據塊鏈</value>
+  </data>
+  <data name="BlockchainDesc" xml:space="preserve">
+    <value>比坎達數據塊鏈與其競爭者——比特幣相比起來，能夠處理更大的交易量。由於數據塊的產出更加頻繁，該網絡可以支持更多的交易，並且在將來無需修改軟件。
+因此，商家可以獲得更快的交易確認，而且在銷售大額商品時依然能夠等待更多的交易確認。</value>
+  </data>
+  <data name="Community" xml:space="preserve">
+    <value>社區</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>聯系我們</value>
+  </data>
+  <data name="Contact us" xml:space="preserve">
+    <value>聯系我們</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="Find support across a growing number of Bitkanda communities:" xml:space="preserve">
+    <value>您可以在日益壯大的比坎達社區中尋求技術支持以及交流分享，例如：</value>
+  </data>
+  <data name="Mining Reward" xml:space="preserve">
+    <value>挖礦獎勵</value>
+  </data>
+  <data name="Mining Reward Desc" xml:space="preserve">
+    <value>“礦工們”目前每數據塊可以產出50個比坎達。每4年，生產的比坎達貨幣量將減少壹半(每經過840000個數據塊)。
+因此，比坎達網絡生產的貨幣總量將是比特幣的4倍，即8400萬個比坎達。</value>
+  </data>
+  <data name="Open Source Software" xml:space="preserve">
+    <value>開源軟件</value>
+  </data>
+  <data name="Open Source Software Desc" xml:space="preserve">
+    <value>比坎達系統是壹款遵循MIT/X11許協議的免費軟件項目，它讓您能夠根據自己的需要對軟件進行運行、修改和復制。如果妳願意，妳也可以發行軟件的修改版本。該軟件以完全公開源碼的形式發布，用戶可以對二進制版本以及對應源代碼進行獨立驗證。</value>
+  </data>
+  <data name="Other versions" xml:space="preserve">
+    <value>其它版本</value>
+  </data>
+  <data name="Release Notes" xml:space="preserve">
+    <value>發行說明</value>
+  </data>
+  <data name="Resources" xml:space="preserve">
+    <value>資源</value>
+  </data>
+  <data name="ResourcesDesc" xml:space="preserve">
+    <value>查看&lt;a href="https://github.com/bitkanda/bitkanda/wiki"&gt;比坎達維基百科&lt;/a&gt;，可以獲取比坎達的相關信息，以及查看所有支持比坎達的網站列表以及交易市場。&lt;br&gt;查看&lt;a href="http://bkd.entbt.com/"&gt;比坎達交易圖表&lt;/a&gt;，獲取最新的網上交易數據。&lt;br&gt;
+訪問&lt;a href="https://github.com/bitkanda/bitkanda"&gt;GitHub.com/bitkanda&lt;/a&gt;，獲取比坎達的源代碼及相關項目。</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>源碼</value>
+  </data>
+  <data name="The Cryptocurrency For Payments" xml:space="preserve">
+    <value>比坎達共和國</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>比坎達 - 比坎達是一個區塊鏈中的國家</value>
+  </data>
+  <data name="Upgrade Notes" xml:space="preserve">
+    <value>升級說明</value>
+  </data>
+  <data name="Wallet Encryption" xml:space="preserve">
+    <value>錢包加密</value>
+  </data>
+  <data name="Wallet EncryptionDesc" xml:space="preserve">
+    <value>錢包加密能夠保證您錢包中私鑰的安全，從而讓您可以查看交易情況及賬戶余額，但是在您使用比坎達之前必須輸入密碼。&lt;br /&gt;
+該功能不僅能夠防止病毒及木馬的侵擾，同時還是支付之前，壹項合法性的有效檢查。</value>
+  </data>
+  <data name="What is Bitkanda?" xml:space="preserve">
+    <value>什麽是比坎達？</value>
+  </data>
+  <data name="You can contact Bitkanda project development team at" xml:space="preserve">
+    <value>您可以通過以下方式聯系比坎達開發團隊</value>
+  </data>
+  <data name="bit" xml:space="preserve">
+    <value>位</value>
+  </data>
+</root>

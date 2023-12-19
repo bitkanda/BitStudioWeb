@@ -51,6 +51,32 @@ namespace bitkanda.Controllers
             return View(result);
         }
 
+        /// <summary>
+        /// 下载play服务框架。
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public IActionResult downdgoogle(string culture)
+        {
+            //CultureInfo.CurrentCulture.Name
+            var items=  CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+
+            ReleaseHelper helper = new ReleaseHelper(_env, Request);
+            IEnumerable<ReleaseModel> releaseresult = helper.GetAllRelease("");
+            var g = from c in releaseresult
+                    group c by new { c.os }
+                    into x1
+                    select new ReleaseGroup
+                    {
+                        os = x1.Key.os,
+                        releaseModel = x1.OrderByDescending(e => e.time).FirstOrDefault()
+                    };
+
+            IndexModel result = new IndexModel(g.ToList()); 
+            return View(result);
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

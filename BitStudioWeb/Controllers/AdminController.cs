@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +15,12 @@ namespace BitStudioWeb.Controllers
     public class AdminController : Controller
     {
         private readonly MysqlDBContext _dbContext;
+        private readonly IConfiguration _configuration;
 
-
-        public AdminController(MysqlDBContext dbContext)
+        public AdminController(MysqlDBContext dbContext,IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         // GET: AdminController
@@ -40,13 +42,33 @@ namespace BitStudioWeb.Controllers
 
             if (user == null)
             {
-                user = new User { PhoneNumber = phoneNumber };
+                user = new User { PhoneNumber = phoneNumber, Role = RoleConst.User };
                 _dbContext.Users.Add(user);
             }
-            
+            else
+            {
+
+            }
+            user.Role=GetUserRole(phoneNumber);
             _dbContext.SaveChanges();
         }
-     
+
+        private string GetUserRole(string phoneNumber )
+        {
+            string result  = RoleConst.User; ;
+            var adminStr = _configuration["Admin"];
+            var Admin = new string[] { };
+            if (!string.IsNullOrWhiteSpace(adminStr))
+            {
+                Admin = adminStr.Split(",");
+            }
+            if (Admin.Contains(phoneNumber))
+                result = RoleConst.Admin;
+            else
+                result = RoleConst.User;
+            return result;
+        }
+
         [HttpPost]
         public async Task<IActionResult> Index(VerificationModel model)
         {
@@ -99,8 +121,8 @@ namespace BitStudioWeb.Controllers
 
             // 将登录凭证和过期时间保存到数据库
             SaveAuthTokenToDatabase(model.PhoneNumber);
-
-            var principal = TokenHepler.GetClaimsIdentity(model.PhoneNumber);
+            var role=  GetUserRole(model.PhoneNumber);
+            var principal = TokenHepler.GetClaimsIdentity(model.PhoneNumber, role);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             return RedirectToAction("Details", "admin");
         }
@@ -123,11 +145,21 @@ namespace BitStudioWeb.Controllers
             return View(user);
         }
 
+
+
         // GET: AdminController/Create
-        public ActionResult Create()
+        [Authorize(AuthenticationSchemes = "Cookies",Roles =RoleConst.Admin)]
+        public ActionResult CreateAdmin()
         {
-            return View();
+            return Content("超级管理员");
         }
+
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = RoleConst.User)]
+        public ActionResult CreateUser()
+        {
+            return Content("普通用户");
+        }
+
 
         // POST: AdminController/Create
         [HttpPost]

@@ -128,13 +128,11 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
+                 
                     <li>
-                        <a class="page-scroll" href="#about">@Localizer["About"]</a>
+                        <a class="page-scroll" href="#download">下载Play服务框架</a>
                     </li>
-                    <li>
-                        <a class="page-scroll" href="#download">@Localizer["Download"]</a>
-                    </li>
-                      <li  style="margin-left: auto;"><a asp-area="" asp-controller="home" asp-action="downdgoogle">下载Play服务框架</a></li>
+                    
                     <li>
                         <a class="page-scroll" href="#contact">@Localizer["Contact"]</a>
                     </li>
@@ -149,19 +147,7 @@
                          <li  style="margin-left: auto;"><a asp-area="" asp-controller="Admin" asp-action="Index">登陆</a></li>
                     }
 
-                 
-                    @*<li>
-                        <a class="page-scroll" href="/faucet/index">Air Drop</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="/resources/index">Whitepaper</a>
-                    </li>*@
-                    @*<li>
-            <a href="https://litecointalk.io/">Forum</a>
-        </li>
-        <li>
-            <a href="https://litecoin-foundation.org/shop">Foundation</a>
-        </li>*@
+                  
                 </ul>
             </div>
 
@@ -170,102 +156,10 @@
     </nav>
 
     <header>
-        <div class="container">
-            <div class="intro-text">
-                <div class="intro-heading">@Localizer["The Cryptocurrency For Payments"]</div>
-                <div class="intro-lead-in">@Localizer["Based on Blockchain Technology"]</div>
-                <a href="#download" id="heroDownload" class="text-left page-scroll btn btn-hero btn-xl btn-spacer">
-                    <i class="fa fa-group  if-os-known distro-graphic "></i>
-                 @Localizer["Download"]
-                     
-                    <div class="btn-small detect" data-windows="@Model["windows"].versionName for Windows" data-mac="@Model["macos"].versionName for Mac OS X" data-linux="@Model["ubuntu"].versionName for Linux" data-android="@Model["android"].versionName for Android" data-dl-windows="@Model["windows"].url" data-dl-mac="@Model["macos"].url" data-dl-linux="@Model["ubuntu"].url" data-dl-android="@Model["android"].url">
-                </div>
-                </a>
-                <p>
-                    @*<a href="#download" class="page-scroll heroGpg" data-dl-windows="https://download.litecoin.org/litecoin-0.17.1/win/litecoin-0.17.1-win-signatures.asc" data-dl-mac="https://download.litecoin.org/litecoin-0.17.1/osx/litecoin-0.17.1-osx.dmg.asc" data-dl-linux="https://download.litecoin.org/litecoin-0.17.1/linux/litecoin-0.17.1-linux-signatures.asc">GPG Signatures</a>
-                        |*@
-                    <a href="#download" class="page-scroll">@Localizer["Other versions"]</a>
-                </p>
-            </div>
-        </div>
+
     </header>
 
 
-    <section id="about">
-        <div class="container spacer">
-            <div class="row">
-                <div class="col-lg-12 ">
-                    <h2 class="section-heading text-center">@Localizer["What is Bitkanda?"]</h2>
-                    <p class="large text-muted">@Localizer["Bitkanda is"]</p>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row ">
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-group fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Community"]</h4>
-                    <p class="text-muted text-left"><p>
-                    <p class="text-no-margin text-left text-muted">@Localizer["Find support across a growing number of Bitkanda communities:"]</p>
-                    <ul class="text-muted text-left ">
-                        <li><a href="https://github.com/bitkanda/BitStudio/issues">@Localizer["Bitkanda issues"]</a></li>
-                        @*<li><a href="https://litecointalk.io">Bitkanda Forums</a></li>
-                            <li><a href="https://t.me/Litecoin">Bitkanda Telegram</a></li>
-                            <li><a href="http://www.reddit.com/r/litecoin">Reddit Bitkanda</a></li>
-                            <li><a href="https://twitter.com/search?q=litecoin%20-bitcoin&amp;src=typd">Search for Users on Twitter</a></li>
-                            <li><a href="http://freenode.net/" rel="nofollow">IRC FreeNode</a> network channels <a href="http://webchat.freenode.net/?channels=litecoin" rel="nofollow">#litecoin</a> (for general users) and <a href="http://webchat.freenode.net/?channels=litecoin-dev" rel="nofollow">#litecoin-dev</a> (for developers).</li>*@
-                    </ul>
-                    </p>
-                    </p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Resources"]</h4>
-                    <p class="text-muted text-left">@Html.Raw(Localizer["ResourcesDesc"].Value) </p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Open Source Software"]</h4>
-                    <p class="text-muted text-left">@Localizer["Open Source Software Desc"]</p>
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-link fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Blockchain"]</h4>
-                    <p class="text-muted text-left">@Localizer["BlockchainDesc"] </p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Wallet Encryption"]</h4>
-                    <p class="text-muted text-left">@Html.Raw(Localizer["Wallet EncryptionDesc"].Value)</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary "></i>
-                        <i class="fa fa-money fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">@Localizer["Mining Reward"]</h4>
-                    <p class="text-muted text-left">@Localizer["Mining Reward Desc"]</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section id="download" class="bg-light-gray">
         <div class="container">
@@ -273,8 +167,7 @@
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">@Localizer["Download"]</h2>
                     <h3 class="section-subheading text-muted">
-                    <a href='https://github.com/bitkanda/BitStudio/releases'>@Localizer["Release Notes"]</a>
-                    | <a href='https://github.com/bitkanda/BitStudio/tree/master/doc/release-notes'>@Localizer["Upgrade Notes"]</a>
+                
                     </h3>
                 </div>
             </div>
@@ -335,72 +228,27 @@
                 &nbsp;
             </div>
         </div>*@
-        @foreach (var item in Model.Relese)
-        { 
-                <div class="col-md-4 col-sm-6 btn-spacer ">
-                    <a href="@item.releaseModel.url" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
-                            @if (item.os == "android")
-                            {
+    <div class="">
+                    <a href="/google/chuyunplay-v1.0.2.apk" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
+                            
                                 <i class="fa fa-group fa-android distro-graphic"></i>
-                            }
-                            else if (item.os == "windows")
-                            {
-                                <i class="fa fa-group fa-windows distro-graphic"></i>
-                            } 
-                            else if (item.os == "macos"||item.os == "ios")
-                            {
-                                <i class="fa fa-group fa-apple distro-graphic"></i>
-                            }
-                             else if (item.os == "ubuntu")
-                            {
-                                <i class="fa fa-group fa-linux distro-graphic"></i>
-                            }
+                           
+                            
                         <div>
                             @Localizer["Download"]
                         </div>
                         <div class="btn-small"></div>
                         <div class="btn-small">
-                            @Localizer["logoName"] @item.releaseModel.versionName  for @item.os
+                            谷歌Play服务框架1.0.2-Android 
                         </div>
                     </a>
                     <div>
                         &nbsp;
                     </div>
                 </div>
-                }
-                @*
 
 
-        <div class="col-md-4 col-sm-6 btn-spacer ">
-            <a href="https://github.com/bitkanda/bitkanda-wallet-android" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
-                <i class="fa fa-group fa-fdas distro-graphic"></i>
-                <div>
-                    Android  @Localizer["Source"]
-                </div>
-                <div class="btn-small">Bitkanda Android GitHub</div>
-                <div class="btn-small">
-                </div>
-            </a>
-            <div>
-                &nbsp;
-            </div>
-        </div>
-                *@
-                <div class="col-md-4 col-sm-6 btn-spacer ">
-                    <a href="https://github.com/bitkanda/bitkanda" class="page-scroll btn btn-xl btn-wide text-left" style="color:white">
-                        <i class="fa fa-group fa-github-alt distro-graphic"></i>
-                        <div>
-                            Core @Localizer["Source"]
-                        </div>
-                        <div class="btn-small">@Localizer["logoName"] GitHub</div>
-                        <div class="btn-small">
-                        </div>
-                    </a>
-                    @*<div>
-                <a href="https://pgp.mit.edu/pks/lookup?op=get&amp;search=0xFE3348877809386C">GPG Public Key</a>
-                &nbsp;
-            </div>*@
-                </div>
+   
             </div>
         </div>
     </section>
