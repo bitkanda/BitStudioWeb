@@ -4,7 +4,7 @@
   dotnet tool install --global dotnet-ef --version 6.0.0
   然后下面的命令可以直接在包管理器执行，不需要命令行执行：
 
-  先用cmd,执行切换到ef的项目文件下，执行
+  先用cmd或使用包管理器,执行切换到ef的项目文件下，执行
   cd BitStudioWeb
   再执行：
   dotnet ef migrations add InitialCreateXXXX

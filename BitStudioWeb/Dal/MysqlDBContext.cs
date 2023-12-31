@@ -91,6 +91,27 @@ namespace bitkanda.Dal
 
         [Column(TypeName = "DateTime")]
         public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 该商品对应的点数。负数不限。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Value { get; set; }
+
+        /// <summary>
+        /// 有效期，单位（天）,从下订单开始时间开始算。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal ExpDay { get; set; }
+
+        /// <summary>
+        ///次数。0代表不限次数。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "int")]
+        public decimal Count { get; set; }
     }
 
     public class Product
@@ -117,7 +138,8 @@ namespace bitkanda.Dal
         [Column(TypeName = "DateTime")]
         public DateTime CreateTime { get; set; }
 
-         
+        [NotMapped] // This attribute tells Entity Framework to not map this property to the database
+        public List<ProductSku> ProductSkus { get; set; }
     }
 
     public class Order

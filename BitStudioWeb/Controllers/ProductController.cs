@@ -24,8 +24,8 @@ namespace BitStudioWeb.Controllers
         //    return Json(new { success = true, Result = data });
         //}
 
-       
-        [Authorize]
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpPost("addproduct")]
         public ActionResult AddProduct(Product product)
         {
@@ -42,7 +42,7 @@ namespace BitStudioWeb.Controllers
             return Json(new { success = data });
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpDelete("delproduct")]
         public ActionResult DelProduct(long id)
         {
@@ -61,7 +61,7 @@ namespace BitStudioWeb.Controllers
             return Json(new { success = data });
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpPost("updateproduct")]
         public ActionResult UpdateProduct(Product product)
         {
@@ -85,13 +85,32 @@ namespace BitStudioWeb.Controllers
         public ActionResult GetProducts(long productid)
         {
             var pd = _dbContext.Products.FirstOrDefault(p => p.ID == productid);
+            if(pd==null)
+                return Json(new { success = false, msg = "找不到产品" });
             var sk = _dbContext.ProductSkus.Where(p => p.ProductId == productid).ToList();
-            var data = new { product = pd, sku = sk };
+            pd.ProductSkus= sk;
+            var data = new { product = pd };
 
             return Json(new { success = true, result = data });
         }
 
-        [Authorize]
+        [HttpGet("getallproducts")]
+        public ActionResult GetAllProducts()
+        {
+            var products = _dbContext.Products.ToList();
+
+            foreach (var product in products)
+            {
+                var skus = _dbContext.ProductSkus.Where(s => s.ProductId == product.ID).ToList();
+                product.ProductSkus = skus;
+            }
+
+            return Json(new { success = true, result = products });
+        }
+
+
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpPost("addsku")]
         public ActionResult AddSku(ProductSku productSku)
         {
@@ -108,7 +127,7 @@ namespace BitStudioWeb.Controllers
             return Json(new { success = data });
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpPost("updatesku")]
         public ActionResult UpdateSku(ProductSku productSku)
         {
@@ -127,7 +146,7 @@ namespace BitStudioWeb.Controllers
             return Json(new { success = data });
 
         }
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpDelete("delsku")]
         public ActionResult DelSku(long id)
         {
