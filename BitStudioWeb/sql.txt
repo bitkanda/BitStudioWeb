@@ -376,3 +376,39 @@ VALUES ('20231105144158_changeCol_CreateTime3', '5.0.17');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+ALTER TABLE "Users" ADD "Role" TEXT NULL;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231219152330_updateUserRole', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "ProductSkus" ADD "Value" decimal(10,2) NOT NULL DEFAULT '0.0';
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231231080421_ProductSKUAddValue', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "ProductSkus" ADD "ExpDay" decimal(10,2) NOT NULL DEFAULT '0.0';
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231231082754_ProductSKUAddExpDay', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "ProductSkus" ADD "Count" int NOT NULL DEFAULT '0.0';
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20231231084159_ProductSKUAddCount', '5.0.17');
+
+COMMIT;
+

@@ -28,27 +28,35 @@ namespace BitStudioWeb.Controllers
         [HttpPost("GetSmsCode")]
         public ActionResult GetSmsCode(string phoneNumber)
         {
-            lock(_locker)
+            try
             {
-                // 生成随机验证码
-                string smsCode = GenerateSmsCode();
+                lock (_locker)
+                {
+                    // 生成随机验证码
+                    string smsCode = GenerateSmsCode();
 
-         
-                
-                // 将验证码保存到数据库
-                var (IsSuccess, ErrorMsg) = SaveSmsCodeToDatabase(phoneNumber, smsCode);
-                if(IsSuccess)
-                {
-                    return Json(new { success = true, message = "验证码已发送" });
+
+
+                    // 将验证码保存到数据库
+                    var (IsSuccess, ErrorMsg) = SaveSmsCodeToDatabase(phoneNumber, smsCode);
+                    if (IsSuccess)
+                    {
+                        return Json(new { success = true, message = "验证码已发送" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = ErrorMsg });
+                    }
                 }
-                else
-                {
-                    return Json(new { success = false, message = ErrorMsg });
-                }
+
             }
-           
+            catch(Exception error)
+            {
+                return Json(new { success = false, message = error.Message+ error.StackTrace });
+            }
 
-            
+
+
         }
         private (bool, string) SaveSmsCodeToDatabase(string phoneNumber, string smsCode)
         {
