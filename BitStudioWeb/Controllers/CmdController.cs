@@ -19,8 +19,11 @@ namespace BitStudioWeb.Controllers
             _dbContext = dbContext;
         }
 
-        //[Authorize]
-   
+        /// <summary>
+        /// 管理员权限才允许执行脚本。
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpPost("Exe")]
         public ActionResult Exe( )
         { 
