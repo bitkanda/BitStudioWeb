@@ -151,14 +151,14 @@ namespace BitStudioWeb.Controllers
                     catch (Exception error)
                     {
                         data = false;
-                        msg = error.Message;
+                        msg = error.Message+error.InnerException?.Message;
                         transaction.Rollback();
                     }
 
                 }
             }
             Exit:
-            return Json(new { success = data,orderId= orderId });
+            return Json(new { success = data,orderId= orderId,msg=msg });
         }
 
 
