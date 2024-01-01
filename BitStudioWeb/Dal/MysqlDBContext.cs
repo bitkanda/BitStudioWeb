@@ -151,24 +151,156 @@ namespace bitkanda.Dal
 
         public long UserId { get; set; }
 
-        public long ProductId { get; set; }
+        //public long ProductId { get; set; }
 
         public int TypeId { get; set; }
 
         [Column(TypeName = "varchar(1000)")]
         public string Info { get; set; }
 
-        public bool? IsPay { get; set; }
+        [Required]
+        public bool IsPay { get; set; }
 
+        [Required]
+        //[Column(TypeName = "decimal(10,2)")]
+        //public decimal Price { get; set; }
+
+        /// <summary>
+        /// 结算金额
+        /// </summary>
         [Column(TypeName = "decimal(10,2)")]
-        public decimal Price { get; set; }
+        public decimal PayAmount { get; set; }
+
+        [Required]
+        /// <summary>
+        /// 零售金额
+        /// </summary>
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal RetailAmount { get; set; }
+
+        [Required]
+        /// <summary>
+        /// 优惠金额
+        /// </summary>
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PromotionAmount { get; set; }
+
         [Required]
         [Column(TypeName = "DateTime")]
         public DateTime CreateTime { get; set; }
+
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime ModifyTime { get; set; }
+
+        /// <summary>
+        /// 支付时间。
+        /// </summary>
         [Column(TypeName = "DateTime")]
         public DateTime? PayTime { get; set; }
 
+
+         /// <summary>
+         /// 支付的用户
+         /// </summary>
+        public long PayUserId { get; set; }
+
+        /// <summary>
+        /// 支付单号或手工单号
+        /// </summary>
+        [Column(TypeName = "varchar(200)")]
+        public string PayOrderNo { get; set; }
+
+        /// <summary>
+        /// 订单明细。
+        /// </summary>
+        [NotMapped]
+        public List<OrderDetal> Details { get; set; }
+
     }
+
+    public class OrderDetal
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { get; set; }
+
+        [Required]
+        public long OrderId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+         
+
+        [Required]
+        public long SkuId { get; set; }
+
+        /// <summary>
+        /// 购买数量
+        /// </summary>
+        [Required]
+        public long Qty { get; set; }
+
+
+        [Required]
+        /// <summary>
+        /// 优惠金额
+        /// </summary>
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PromotionAmount { get; set; }
+
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+
+
+        [Required]  
+        /// <summary>
+        /// 结算金额
+        /// </summary>
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PayAmount { get; set; }
+
+        [Required]
+        /// <summary>
+        /// 零售金额
+        /// </summary>
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal RetailAmount { get; set; }
+
+
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Name { get; set; }
+ 
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Price { get; set; }
+         
+        /// <summary>
+        /// 该商品对应的点数。负数不限。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Value { get; set; }
+
+        /// <summary>
+        /// 有效期，单位（天）,从下订单开始时间开始算。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal ExpDay { get; set; }
+
+        /// <summary>
+        ///次数。0代表不限次数。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "int")]
+        public decimal Count { get; set; }
+
+
+    }
+
     public class MysqlDBContext: DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -195,5 +327,8 @@ namespace bitkanda.Dal
         public DbSet<Product> Products { get; set; }
 
         public DbSet<ProductSku> ProductSkus { get; set; }
+
+
+        public DbSet<OrderDetal> OrderDetals { get; set; }
     }
 }

@@ -97,11 +97,22 @@ namespace BitStudioWeb.Controllers
         [HttpGet("getallproducts")]
         public ActionResult GetAllProducts()
         {
-            var products = _dbContext.Products.ToList();
+            var products =(from c in  _dbContext.Products 
+                          select c)
+                          .ToList();
+            //sqlite不支持直接对价格排序。
+            products =( from c in products
+                       orderby c.Price ascending
+                       select c).ToList();
 
             foreach (var product in products)
             {
-                var skus = _dbContext.ProductSkus.Where(s => s.ProductId == product.ID).ToList();
+                var skus =(from c in  _dbContext.ProductSkus
+                           where c.ProductId== product.ID 
+                         select c).ToList();
+                skus = (from c in skus
+                        orderby c.Price ascending
+                        select c).ToList();
                 product.ProductSkus = skus;
             }
 
@@ -139,8 +150,7 @@ namespace BitStudioWeb.Controllers
             }
             else
             {
-                dbproductSkus.Price = productSku.Price;
-                dbproductSkus.Name = productSku.Name; 
+                _dbContext.Entry(dbproductSkus).CurrentValues.SetValues(productSku);
                 data = _dbContext.SaveChanges() > 0;
             }
             return Json(new { success = data });
