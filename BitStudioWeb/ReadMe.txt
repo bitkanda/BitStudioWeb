@@ -10,5 +10,5 @@
   dotnet ef migrations add InitialCreateXXXX
   dotnet ef database update
   
-  执行生成sql命令
+  执行生成sql升级脚本。
   dotnet ef migrations script -o sql.txt

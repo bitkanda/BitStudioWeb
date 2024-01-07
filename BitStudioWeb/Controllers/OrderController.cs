@@ -11,13 +11,28 @@ namespace BitStudioWeb.Controllers
 {
 
     public class AddOrder
-    {  
+    {
+
+        /// <summary>
+        /// 买家留言
+        /// </summary>
+        [Display(Name = "买家留言")]
+        public string BuyerMsg { get; set; }
+
+
+        /// <summary>
+        /// 手机
+        /// </summary>
+       [Display(Name = "手机")]
+        [Required]
+        public string Mobile { get; set; }
+
 
         /// <summary>
         /// 订单明细。
         /// </summary>
-       
-        public  AddOrderDetal[] Details { get; set; }
+
+        public AddOrderDetal[] Details { get; set; }
 
     }
 
@@ -56,13 +71,44 @@ namespace BitStudioWeb.Controllers
             _dbContext = dbContext;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpGet("getorder")]
-        public ActionResult GetOrder(bool isPay)
+        public ActionResult GetOrder(bool? isPay)
         {
-            var data = _dbContext.Orders.Where(o => o.IsPay == isPay).ToList();
+            var data = GetOrder(isPay, null);
             return Json(new { success = true, Result = data });
         }
-     
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
+        [HttpGet("getMyOrder")]
+        public ActionResult GetMyOrder(bool? isPay)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name);
+            var data = GetOrder(isPay, user.ID);
+            return Json(new { success = true, Result = data });
+        }
+
+        private List<Order> GetOrder(bool? isPay,long? UserID )
+        {
+            IQueryable<Order> data = _dbContext.Orders.AsQueryable();
+            if (isPay != null)
+                data = data.Where(o => o.IsPay == isPay.Value);
+            if (UserID !=null)
+                data = data.Where(e => e.UserId == UserID.Value);
+
+            var r = data.ToList();
+            foreach (var one in data)
+            {
+                var details = from c in _dbContext.OrderDetals
+                              where c.OrderId == one.ID
+                              select c;
+                one.Details = details.ToList();
+            }
+            return   r ;
+        }
+
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
         [HttpGet("getorder/{id:int}")]
         public ActionResult GetOrder(long id)
         {
@@ -81,6 +127,7 @@ namespace BitStudioWeb.Controllers
         {
             bool data;
             string msg = "";
+            string innermsg = "";
             long orderId = 0;
             if (order == null)
             {
@@ -99,12 +146,25 @@ namespace BitStudioWeb.Controllers
                 {
                     try
                     {
+                        //检查用户是否有未完成的订单。
+                        var exitsOrder =( from c in _dbContext.Orders
+                                         where c.IsPay == false && c.UserId == user.ID
+                                         select c).FirstOrDefault();
+                        if(exitsOrder!=null)
+                        {
+                            data = false;
+                            msg = $"存在未付款的订单，订单号：{exitsOrder.ID},如果拍错可以先取消原来的订单再下单。";
+                            goto Exit;
+                        }
                         //检查传入的订单信息是否正确。
                         var newOrder = new Order
                         {
                             ModifyTime = DateTime.Now,
                             CreateTime = DateTime.Now,
-                            UserId= user.ID
+                            UserId = user.ID,
+                            BuyerMsg = order.BuyerMsg,
+                            Mobile=order.Mobile,
+                            SellerMsg = "",
                         };
 
                         _dbContext.Orders.Add(newOrder);
@@ -151,14 +211,15 @@ namespace BitStudioWeb.Controllers
                     catch (Exception error)
                     {
                         data = false;
-                        msg = error.Message+error.InnerException?.Message;
+                        msg = error.Message;
+                        innermsg = error.InnerException?.Message;
                         transaction.Rollback();
                     }
 
                 }
             }
             Exit:
-            return Json(new { success = data,orderId= orderId,msg=msg });
+            return Json(new { success = data,orderId= orderId,msg=msg,innermsg= innermsg });
         }
 
 

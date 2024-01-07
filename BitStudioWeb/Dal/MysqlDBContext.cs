@@ -211,6 +211,28 @@ namespace bitkanda.Dal
         [Column(TypeName = "varchar(200)")]
         public string PayOrderNo { get; set; }
 
+
+        /// <summary>
+        /// 买家留言
+        /// </summary>
+        [Column(TypeName = "varchar(200)")]
+        public string BuyerMsg { get; set; }
+
+        /// <summary>
+        /// 卖家留言
+        /// </summary>
+        [Column(TypeName = "varchar(200)")]
+        public string SellerMsg { get; set; }
+
+
+        /// <summary>
+        /// 手机
+        /// </summary>
+        [Column(TypeName = "varchar(200)")]
+        public string Mobile { get; set; }
+
+
+
         /// <summary>
         /// 订单明细。
         /// </summary>

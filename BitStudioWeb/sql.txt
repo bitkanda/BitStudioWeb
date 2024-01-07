@@ -412,3 +412,88 @@ VALUES ('20231231084159_ProductSKUAddCount', '5.0.17');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+ALTER TABLE "Orders" RENAME COLUMN "ProductId" TO "PayUserId";
+
+ALTER TABLE "Orders" RENAME COLUMN "Price" TO "RetailAmount";
+
+ALTER TABLE "Orders" ADD "ModifyTime" DateTime NOT NULL DEFAULT '0001-01-01 00:00:00';
+
+ALTER TABLE "Orders" ADD "PayAmount" decimal(10,2) NOT NULL DEFAULT '0.0';
+
+ALTER TABLE "Orders" ADD "PayOrderNo" varchar(200) NULL;
+
+ALTER TABLE "Orders" ADD "PromotionAmount" decimal(10,2) NOT NULL DEFAULT '0.0';
+
+CREATE TABLE "OrderDetals" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_OrderDetals" PRIMARY KEY AUTOINCREMENT,
+    "OrderId" INTEGER NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "SkuId" INTEGER NOT NULL,
+    "Qty" INTEGER NOT NULL,
+    "PromotionAmount" decimal(10,2) NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "PayAmount" decimal(10,2) NOT NULL,
+    "RetailAmount" decimal(10,2) NOT NULL,
+    "Name" varchar(100) NOT NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "Value" decimal(10,2) NOT NULL,
+    "ExpDay" decimal(10,2) NOT NULL,
+    "Count" int NOT NULL
+);
+
+CREATE TABLE "ef_temp_Orders" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Orders" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Info" varchar(1000) NULL,
+    "IsPay" INTEGER NOT NULL,
+    "ModifyTime" DateTime NOT NULL,
+    "PayAmount" decimal(10,2) NOT NULL,
+    "PayOrderNo" varchar(200) NULL,
+    "PayTime" DateTime NULL,
+    "PayUserId" INTEGER NOT NULL,
+    "PromotionAmount" decimal(10,2) NOT NULL,
+    "RetailAmount" decimal(10,2) NOT NULL,
+    "TypeId" INTEGER NOT NULL,
+    "UserId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Orders" ("ID", "CreateTime", "Info", "IsPay", "ModifyTime", "PayAmount", "PayOrderNo", "PayTime", "PayUserId", "PromotionAmount", "RetailAmount", "TypeId", "UserId")
+SELECT "ID", "CreateTime", "Info", IFNULL("IsPay", 0), "ModifyTime", "PayAmount", "PayOrderNo", "PayTime", "PayUserId", "PromotionAmount", "RetailAmount", "TypeId", "UserId"
+FROM "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Orders";
+
+ALTER TABLE "ef_temp_Orders" RENAME TO "Orders";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240101154104_order', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "Orders" ADD "BuyerMsg" varchar(200) NULL;
+
+ALTER TABLE "Orders" ADD "Mobile" varchar(200) NULL;
+
+ALTER TABLE "Orders" ADD "SellerMsg" varchar(200) NULL;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240107123417_Order_add_mobileAnd_BuyerMsg', '5.0.17');
+
+COMMIT;
+
