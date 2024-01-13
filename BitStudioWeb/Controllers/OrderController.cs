@@ -95,8 +95,8 @@ namespace BitStudioWeb.Controllers
                 data = data.Where(o => o.OrderStatus == orderStatus.Value);
             if (UserID !=null)
                 data = data.Where(e => e.UserId == UserID.Value);
-
-            var r = data.ToList();
+            //按下单时间排序。
+            var r = data.OrderByDescending(e=>e.ID).ToList();
             foreach (var one in data)
             {
                 var details = from c in _dbContext.OrderDetals
@@ -196,6 +196,7 @@ namespace BitStudioWeb.Controllers
                                 Count = sku.Count,
                                 CreateTime = DateTime.Now,
                                 ExpDay = sku.ExpDay,
+                                ImgUrl= sku.ImgUrl,
                                 Name = sku.Name,
                                 OrderId = newOrder.ID,
                                 PayAmount = sku.Price * detail.Qty,
@@ -266,5 +267,45 @@ namespace BitStudioWeb.Controllers
             return Json(new { success = data,msg= msg });
 
         }
+
+
+        /// <summary>
+        /// 取消我的未付款订单。
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
+        [HttpGet("cancelMyOrder")]
+        public ActionResult cancelMyOrder(long id)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name); 
+            var msg = "";
+            bool data;
+            var dbOrder =( from c in _dbContext.Orders
+                          where c.ID == id
+                          select c).FirstOrDefault();
+
+            if (dbOrder == null)
+            {
+                data = false;
+                msg = "订单不存在！";
+                goto Exit;
+            }
+            if (dbOrder.OrderStatus!=0)
+            {
+                data = false;
+                msg = "只有未付款的订单才能取消！";
+                goto Exit;
+            }
+            
+            dbOrder.ModifyTime = DateTime.Now; 
+            dbOrder.OrderStatus = 5;
+            data = _dbContext.SaveChanges() > 0;
+            data = true;
+            msg = "成功！";
+            Exit:
+            return Json(new { success = data, msg = msg }); 
+        }
+
     }
 }

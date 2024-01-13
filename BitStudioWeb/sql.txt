@@ -508,3 +508,44 @@ VALUES ('20240110164932_orderStatus', '5.0.17');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+ALTER TABLE "ProductSkus" ADD "ImgUrl" varchar(500) NULL;
+
+ALTER TABLE "OrderDetals" ADD "ImgUrl" varchar(500) NULL;
+
+CREATE TABLE "ef_temp_Products" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_Products" PRIMARY KEY AUTOINCREMENT,
+    "CreateTime" DateTime NOT NULL DEFAULT (datetime()),
+    "Description" varchar(1000) NULL,
+    "ImgUrl" varchar(500) NULL,
+    "Price" decimal(10,2) NOT NULL,
+    "Title" varchar(100) NOT NULL,
+    "TypeId" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_Products" ("ID", "CreateTime", "Description", "ImgUrl", "Price", "Title", "TypeId")
+SELECT "ID", "CreateTime", "Description", "ImgUrl", "Price", "Title", "TypeId"
+FROM "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "Products";
+
+ALTER TABLE "ef_temp_Products" RENAME TO "Products";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240113073524_orderAddpic', '5.0.17');
+
+COMMIT;
+

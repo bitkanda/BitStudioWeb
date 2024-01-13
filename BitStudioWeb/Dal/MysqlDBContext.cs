@@ -112,6 +112,12 @@ namespace bitkanda.Dal
         [Required]
         [Column(TypeName = "int")]
         public decimal Count { get; set; }
+
+        /// <summary>
+        /// 产品图
+        /// </summary>
+        [Column(TypeName = "varchar(500)")]
+        public string ImgUrl { get; set; }
     }
 
     public class Product
@@ -129,7 +135,7 @@ namespace bitkanda.Dal
         [Required]
         public int TypeId { get; set; }
 
-        [Column(TypeName = "varchar(60)")]
+        [Column(TypeName = "varchar(500)")]
         public string ImgUrl { get; set; }
 
         [Column(TypeName = "varchar(1000)")]
@@ -238,7 +244,7 @@ namespace bitkanda.Dal
         public long Qty { get; set; }
 
         /// <summary>
-        /// 订单状态.0待付款，1已付款，2实物发货，3已完成或发送券到买家短信。
+        /// 订单状态.0待付款，1已付款，2实物发货，3已完成或发送券到买家短信,5为已经取消。。
         /// </summary>
         public long OrderStatus { get; set; }
 
@@ -329,7 +335,11 @@ namespace bitkanda.Dal
         [Column(TypeName = "int")]
         public decimal Count { get; set; }
 
-
+        /// <summary>
+        /// 产品图
+        /// </summary>
+        [Column(TypeName = "varchar(500)")]
+        public string ImgUrl { get; set; }
     }
 
     public class MysqlDBContext: DbContext
