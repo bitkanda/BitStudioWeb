@@ -73,26 +73,26 @@ namespace BitStudioWeb.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
         [HttpGet("getorder")]
-        public ActionResult GetOrder(bool? isPay)
+        public ActionResult GetOrder(long? orderStatus)
         {
-            var data = GetOrder(isPay, null);
+            var data = GetOrder(orderStatus, null);
             return Json(new { success = true, Result = data });
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
         [HttpGet("getMyOrder")]
-        public ActionResult GetMyOrder(bool? isPay)
+        public ActionResult GetMyOrder(long? orderStatus)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name);
-            var data = GetOrder(isPay, user.ID);
+            var data = GetOrder(orderStatus, user.ID);
             return Json(new { success = true, Result = data });
         }
 
-        private List<Order> GetOrder(bool? isPay,long? UserID )
+        private List<Order> GetOrder(long? orderStatus,long? UserID )
         {
             IQueryable<Order> data = _dbContext.Orders.AsQueryable();
-            if (isPay != null)
-                data = data.Where(o => o.IsPay == isPay.Value);
+            if (orderStatus != null)
+                data = data.Where(o => o.OrderStatus == orderStatus.Value);
             if (UserID !=null)
                 data = data.Where(e => e.UserId == UserID.Value);
 
@@ -112,13 +112,19 @@ namespace BitStudioWeb.Controllers
         [HttpGet("getorder/{id:int}")]
         public ActionResult GetOrder(long id)
         {
+            Order data = GetOrderById(id);
+
+            return Json(new { success = true, Result = data });
+        }
+
+        private Order GetOrderById(long id)
+        {
             var data = _dbContext.Orders.Find(id);
             var details = from c in _dbContext.OrderDetals
                           where c.OrderId == id
                           select c;
             data.Details = details.ToList();
-
-            return Json(new { success = true, Result = data });
+            return data;
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
@@ -148,7 +154,7 @@ namespace BitStudioWeb.Controllers
                     {
                         //检查用户是否有未完成的订单。
                         var exitsOrder =( from c in _dbContext.Orders
-                                         where c.IsPay == false && c.UserId == user.ID
+                                         where c.OrderStatus == 0 && c.UserId == user.ID
                                          select c).FirstOrDefault();
                         if(exitsOrder!=null)
                         {
@@ -164,7 +170,8 @@ namespace BitStudioWeb.Controllers
                             UserId = user.ID,
                             BuyerMsg = order.BuyerMsg,
                             Mobile=order.Mobile,
-                            SellerMsg = "",
+                            SellerMsg = "", 
+                            Qty = order.Details.Sum(e=>e.Qty)
                         };
 
                         _dbContext.Orders.Add(newOrder);
@@ -218,8 +225,11 @@ namespace BitStudioWeb.Controllers
 
                 }
             }
-            Exit:
-            return Json(new { success = data,orderId= orderId,msg=msg,innermsg= innermsg });
+        Exit:
+            Order orderData = null;
+            if(orderId>0)
+                orderData = GetOrderById(orderId);
+            return Json(new { success = data,orderId= orderId,msg=msg,innermsg= innermsg,data= orderData });
         }
 
 
@@ -245,11 +255,12 @@ namespace BitStudioWeb.Controllers
             }
             else
             {
-                dbOrder.IsPay = true;
+                
                 dbOrder.PayTime = DateTime.Now;
                 dbOrder.ModifyTime = DateTime.Now;
                 dbOrder.PayUserId = user.ID;
                 dbOrder.PayOrderNo = PayOrder. PayOrderNo;
+                dbOrder.OrderStatus = 1;
                 data =_dbContext.SaveChanges()>0;
             }
             return Json(new { success = data,msg= msg });

@@ -158,8 +158,8 @@ namespace bitkanda.Dal
         [Column(TypeName = "varchar(1000)")]
         public string Info { get; set; }
 
-        [Required]
-        public bool IsPay { get; set; }
+        //[Required]
+        //public bool IsPay { get; set; }
 
         [Required]
         //[Column(TypeName = "decimal(10,2)")]
@@ -231,7 +231,16 @@ namespace bitkanda.Dal
         [Column(TypeName = "varchar(200)")]
         public string Mobile { get; set; }
 
+        /// <summary>
+        /// 购买数量
+        /// </summary>
+       // [Required]
+        public long Qty { get; set; }
 
+        /// <summary>
+        /// 订单状态.0待付款，1已付款，2实物发货，3已完成或发送券到买家短信。
+        /// </summary>
+        public long OrderStatus { get; set; }
 
         /// <summary>
         /// 订单明细。

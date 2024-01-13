@@ -497,3 +497,14 @@ VALUES ('20240107123417_Order_add_mobileAnd_BuyerMsg', '5.0.17');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+ALTER TABLE "Orders" RENAME COLUMN "IsPay" TO "Qty";
+
+ALTER TABLE "Orders" ADD "OrderStatus" INTEGER NOT NULL DEFAULT 0;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240110164932_orderStatus', '5.0.17');
+
+COMMIT;
+
