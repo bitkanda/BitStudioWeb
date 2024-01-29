@@ -245,27 +245,74 @@ namespace BitStudioWeb.Controllers
         [HttpPost("payorder")]
         public ActionResult PayOrder(PayOrderModel PayOrder)
         {
-          
-            var user=  _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name);
-            var msg = "";
-            bool data;
-            var dbOrder = _dbContext.Orders.Find(PayOrder.orderId);
-            if (dbOrder == null) { 
-                data = false;
-                msg = "订单不存在！";
-            }
-            else
+            using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                
-                dbOrder.PayTime = DateTime.Now;
-                dbOrder.ModifyTime = DateTime.Now;
-                dbOrder.PayUserId = user.ID;
-                dbOrder.PayOrderNo = PayOrder. PayOrderNo;
-                dbOrder.OrderStatus = 1;
-                data =_dbContext.SaveChanges()>0;
-            }
-            return Json(new { success = data,msg= msg });
+                var user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name);
+                var msg = "";
+                bool data;
+                var dbOrder = _dbContext.Orders.Find(PayOrder.orderId);
+                if (dbOrder == null)
+                {
+                    data = false;
+                    msg = "订单不存在！";
+                }
+                else
+                {
 
+                    dbOrder.PayTime = DateTime.Now;
+                    dbOrder.ModifyTime = DateTime.Now;
+                    dbOrder.PayUserId = user.ID;
+                    dbOrder.PayOrderNo = PayOrder.PayOrderNo;
+                    dbOrder.OrderStatus = 1;
+                    data = _dbContext.SaveChanges() > 0;
+
+                    //更新库存。
+                    var details =( from c in _dbContext.OrderDetals
+                                 where c.OrderId == PayOrder.orderId
+                                 select c).ToList();
+                     
+                    foreach (var one in details)
+                    {
+                        var ExpDayTime = DateTime.MinValue;
+                        if(one.ExpDay>0)
+                        {
+                            var t = dbOrder.PayTime.Value.ToString("yyyy-MM-dd"); 
+                            ExpDayTime= DateTime.Parse(t).AddDays((double)one.ExpDay);
+                        }
+
+                        InvTotalMaster m = null;
+                        m=( from c in _dbContext.InvTotalMaster
+                                where c.UserID == dbOrder.UserId && c.ProductId == one.ProductId
+                                && c.SkuId == one.SkuId && c.ExpDayTime == ExpDayTime && c.Count == one.Count
+                                select c).FirstOrDefault();
+                        if(m==null)
+                        {
+                            m = new InvTotalMaster
+                            {
+                                Count = one.Count,
+                                CreateTime = dbOrder.PayTime.Value,
+                                ExpDayTime = ExpDayTime,
+                                ProductId = one.ProductId, 
+                                SkuId = one.SkuId,
+                                UserID = dbOrder.UserId,
+                                Value = one.Value*one.Qty,
+                                ModifyTime= DateTime.MinValue
+                            };
+                            _dbContext.InvTotalMaster.Add(m);
+                        }
+                        else
+                        {
+                            m.Value += one.Value * one.Qty;
+                            m.ModifyTime = dbOrder.PayTime.Value;
+                        }
+                        _dbContext.SaveChanges();
+                    }
+
+                  
+                    transaction.Commit(); // 提交事务
+                }
+                return Json(new { success = data, msg = msg });
+            }
         }
 
 

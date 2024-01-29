@@ -3,16 +3,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using SharpToken;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BitStudioWeb.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TokenController : ControllerBase
+    public class TokenController : Controller
     {
         private readonly IConfiguration _configuration;
 
@@ -55,16 +62,6 @@ namespace BitStudioWeb.Controllers
             }
            
         }
-
-    
-        //[Authorize]
-        //[HttpPost("test")]
-        //public ActionResult Test()
-        //{
-        //    // 获取当前用户的标识
-        //    var userIdentity = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    return Ok(new { result= "Authorize" });
-        //}
 
     }
 }

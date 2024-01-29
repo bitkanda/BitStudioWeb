@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bitkanda.Dal;
 
 namespace bitkanda.Migrations
 {
     [DbContext(typeof(MysqlDBContext))]
-    partial class MysqlDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240120100225_inv")]
+    partial class inv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +59,7 @@ namespace bitkanda.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Count")
+                    b.Property<decimal>("Count")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
@@ -92,19 +94,19 @@ namespace bitkanda.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Count")
+                    b.Property<decimal>("Count")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("DateTime");
 
-                    b.Property<DateTime>("ExpDayTime")
-                        .HasColumnType("DateTime");
-
-                    b.Property<DateTime>("ModifyTime")
+                    b.Property<decimal>("ExpDayTime")
                         .HasColumnType("DateTime");
 
                     b.Property<long>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Qty")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("SkuId")
@@ -188,7 +190,7 @@ namespace bitkanda.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Count")
+                    b.Property<decimal>("Count")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
@@ -274,7 +276,7 @@ namespace bitkanda.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Count")
+                    b.Property<decimal>("Count")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
@@ -304,44 +306,6 @@ namespace bitkanda.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("ProductSkus");
-                });
-
-            modelBuilder.Entity("bitkanda.Dal.UsedLog", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CompletionTokens")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("DateTime");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("Object")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<int>("PromptTokens")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RequestID")
-                        .IsRequired()
-                        .HasColumnType("varchar(40)");
-
-                    b.Property<int>("TotalTokens")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("UserID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("UsedLogs");
                 });
 
             modelBuilder.Entity("bitkanda.Dal.User", b =>

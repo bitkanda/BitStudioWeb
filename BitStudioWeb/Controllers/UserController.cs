@@ -192,6 +192,67 @@ namespace BitStudioWeb.Controllers
             return Json(user);
         }
 
+
+        /// <summary>
+        /// 获取当前用户算力余额。
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.User)]
+        [HttpGet("GetUserInv")]
+        public ActionResult GetUserInv()
+        {
+            var user = UserHelper.GetCurrentUserID(User.Identity.Name, _dbContext);
+            var now = DateTime.Now;
+            var result = new object();
+            //查询存在未过期的，或不限过期时间的库存。
+            var query = from c in _dbContext.InvTotalMaster
+                        join u in _dbContext.InvUsedMaster on
+                        new { c.UserID, c.ProductId, c.SkuId, c.ExpDayTime } equals
+                        new { u.UserID, u.ProductId, u.SkuId, u.ExpDayTime }
+                        into x1 
+                        from used in x1.DefaultIfEmpty()
+                        join ps in _dbContext.ProductSkus on new { SkuId=c.SkuId } equals new { SkuId=ps.ID }
+                        into x2
+                        from sku in x2.DefaultIfEmpty()
+                        join  p in _dbContext.Products on new { ProductId = c.ProductId} equals new { ProductId = p.ID }
+                        into x3
+                        from product in x3.DefaultIfEmpty()
+                        where c.UserID == user.ID
+                       // && (c.ExpDayTime == DateTime.MinValue//不限制时间。
+                       // || c.ExpDayTime >= now)//没有过期的。
+                       // && (c.Count == 0 || (used == null) || (used != null && c.Count > used.Count))//不限使用次数的，没有使用过的，没有超过限制次数的。
+                       // && (used == null || (used != null && c.Value > used.Value))
+                        select new
+                        {
+                            SkuName=(sku == null?"": sku.Name),
+                            ProductName=(product==null?"": product.Title),
+                            c.ExpDayTime,
+                            c.Count,
+                            c.ProductId,
+                            c.SkuId,
+                            c.UserID,
+                            c.Value,
+                            c.CreateTime,
+                            c.ModifyTime,
+                            UsedValue=(used == null ? 0 : used.Value),
+                            UsedCount=(used == null ? 0 : used.Count),
+                            UsedExpDayTime = (used == null ? DateTime.MinValue : used.ExpDayTime),
+                            UsedID=(used == null ? 0 : used.ID),
+                            IsExpired= ((c.Count > 0 && c.Count <= (used == null ? 0 : used.Count)) 
+                            || (c.Value <= (used == null ? 0 : used.Value)) ||
+                            (c.ExpDayTime != DateTime.MinValue && c.ExpDayTime < now))
+                        }
+                        ;
+            var q = query.ToList();
+            //foreach (var one in q)
+            //{
+            //    //是否失效。
+            //    one.IsExpired = (one.Count > 0 && one.Count <= one.UsedCount) || (one.Value <= one.UsedValue) ||
+            //        (one.ExpDayTime != DateTime.MinValue && one.ExpDayTime < now);
+            //}
+            return Json(q);
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer", Roles =RoleConst.Admin)]
         [HttpPost("GetUserInfoAdmin")]
         public ActionResult GetUserInfoAdmin()

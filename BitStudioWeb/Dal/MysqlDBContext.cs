@@ -111,7 +111,7 @@ namespace bitkanda.Dal
         /// </summary>
         [Required]
         [Column(TypeName = "int")]
-        public decimal Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// 产品图
@@ -322,7 +322,7 @@ namespace bitkanda.Dal
         public decimal Value { get; set; }
 
         /// <summary>
-        /// 有效期，单位（天）,从下订单开始时间开始算。
+        /// 有效期，单位（天）,从订单付款时间开始算。
         /// </summary>
         [Required]
         [Column(TypeName = "decimal(10,2)")]
@@ -333,13 +333,179 @@ namespace bitkanda.Dal
         /// </summary>
         [Required]
         [Column(TypeName = "int")]
-        public decimal Count { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// 产品图
         /// </summary>
         [Column(TypeName = "varchar(500)")]
         public string ImgUrl { get; set; }
+    }
+
+
+    /// <summary>
+    /// 用户总算力库存,下单更新。
+    /// </summary>
+    public class InvTotalMaster
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { get; set; }
+
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [Required]
+        public long UserID { get; set; }
+  
+        [Required]
+        public long ProductId { get; set; }
+         
+        [Required]
+        public long SkuId { get; set; }
+
+ 
+         
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime ModifyTime { get; set; }
+        /// <summary>
+        /// 该商品对应的点数。负数不限。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Value { get; set; }
+
+        /// <summary>
+        ///过期时间，单位（天）,从订单付款时间开始算。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime ExpDayTime { get; set; }
+
+        /// <summary>
+        ///次数。0代表不限次数。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "int")]
+        public int Count { get; set; } 
+    }
+
+    /// <summary>
+    /// 用户已消耗算力，调用接口更新。总算力库存-已消耗算力=可用算力。
+    /// </summary>
+    public class InvUsedMaster
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { get; set; }
+
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [Required]
+        public long UserID { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [Required]
+        public long SkuId { get; set; }
+         
+
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+
+
+        /// <summary>
+        /// 该商品对应的点数。负数不限。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Value { get; set; }
+
+        /// <summary>
+        ///过期时间，单位（天）,从订单付款时间开始算。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime ExpDayTime { get; set; }
+
+        /// <summary>
+        ///调用次数。0代表不限次数。
+        /// </summary>
+        [Required]
+        [Column(TypeName = "int")]
+        public int Count { get; set; }
+
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime ModifyTime { get; set; }
+    }
+
+    /// <summary>
+    /// 消费记录
+    /// </summary>
+    public class UsedLog
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { get; set; }
+
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [Required]
+        public long UserID { get; set; }
+         
+        [Required]
+        [Column(TypeName = "DateTime")]
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// GPT接口请求ID
+        /// </summary>
+        [Required]
+        [Column(TypeName = "varchar(40)")]
+        public string RequestID { get; set; }
+
+        /// <summary>
+        /// 使用的模型
+        /// </summary>
+        [Required]
+        [Column(TypeName = "varchar(30)")]
+        public string Model { get; set; }
+
+        /// <summary>
+        /// 使用的模型
+        /// </summary>
+        [Required]
+        [Column(TypeName = "varchar(30)")]
+        public string @Object { get; set; }
+
+       /// <summary>
+        /// 提示词长度
+        /// </summary>
+        [Required]
+        public int PromptTokens { get; set; }
+
+        /// <summary>
+        /// 回复长度
+        /// </summary>
+        [Required]
+        public int CompletionTokens { get; set; }
+
+
+         /// <summary>
+        /// 总长度
+        /// </summary>
+        [Required]
+        public int TotalTokens { get; set; }
     }
 
     public class MysqlDBContext: DbContext
@@ -371,5 +537,13 @@ namespace bitkanda.Dal
 
 
         public DbSet<OrderDetal> OrderDetals { get; set; }
+
+        public DbSet<InvTotalMaster> InvTotalMaster { get; set; }
+
+        public DbSet<InvUsedMaster> InvUsedMaster { get; set; }
+
+        public DbSet<UsedLog> UsedLogs { get; set; }
+
+
     }
 }
