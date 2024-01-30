@@ -14,105 +14,89 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Configuration;
+using BitStudioWeb.Controllers;
 
 namespace BitStudioWeb.Controllers
 {
-    public class GPTController : Controller
+    public class StreamWriterResult : ActionResult
     {
+        private readonly Stream _responseBody;
+
+        public StreamWriterResult(Stream responseBody)
+        {
+            _responseBody = responseBody;
+        }
+
+        public async override Task ExecuteResultAsync(ActionContext context)
+        {
+            var writer = new StreamWriter(_responseBody) ;
+            int i = 0;
+            while (i < 30) // 无限循环，模拟持续的服务器端发送
+            {
+                var line = $"data: { DateTimeOffset.Now },i={i}";
+                Debug.WriteLine(line);
+                await writer.WriteLineAsync(line);
+                await writer.FlushAsync();
+                await Task.Delay(1000); // 每秒发送一次
+                i++;
+            }
+
+
+        }
+    }
+
+
+    public class GPTStreamWriterResult : ActionResult
+    {
+        private readonly Stream _responseBody;
         private readonly MysqlDBContext _dbContext;
         private readonly IConfiguration _configuration;
-        public GPTController(MysqlDBContext dbContext, IConfiguration configuration)
+        private readonly string UserIdentityName = "";
+        private readonly string RequestBody = "";
+        public  GPTStreamWriterResult(Stream responseBody, 
+            MysqlDBContext dbContext, 
+            IConfiguration configuration,
+            string userIdentityName,
+            string requestBody
+            )
         {
+            _responseBody = responseBody;
             _dbContext = dbContext;
             _configuration = configuration;
+            UserIdentityName = userIdentityName;
+            RequestBody = requestBody;
+
+
         }
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
-        [Route("/v1/chat/completions")]
-        [HttpPost]
-        public Task<ActionResult> ChatCompletions()
+
+        public async override Task ExecuteResultAsync(ActionContext context)
         {
-            try
-            {
-                String Body = "";
-                using (var streamReader = new StreamReader(HttpContext.Request.BodyReader.AsStream()))
-                {
-                    Body = streamReader.ReadToEnd();
-                }
-                JObject tokeninfo = Newtonsoft.Json.JsonConvert.DeserializeObject(Body) as JObject;
-                var model = tokeninfo.Value<string>("model");
-                var stream=tokeninfo.Value<bool?>("stream");
-                if (stream == null)
-                    stream = false;
+            JObject tokeninfo = Newtonsoft.Json.JsonConvert.DeserializeObject(RequestBody) as JObject;
+            var model = tokeninfo.Value<string>("model");
+            var stream = tokeninfo.Value<bool?>("stream");
+            if (stream == null)
+                stream = false;
 
-                //var messages = tokeninfo["messages"] as Newtonsoft.Json.Linq.JArray;
-                // Get encoding by model name
-                //var encoding = GptEncoding.GetEncodingForModel(token.Model);
-                //var encoded = encoding.Encode(token.Text);
-                //var n = NumTokensFromMessages(messages, model);
-                /*
-                  注意：
-                  这个是计算上下文的token(prompt_tokens)数量算法，
-                  并不包含回复的token(completion_tokens) 
-                  计算回复的token ：直接使用函数encoding.Encode(回复字符串).Count
-                  总消耗token(total_tokens)= prompt_tokens+completion_tokens
-                */
-                //写入消费记录。
-                //_dbContext.UsedLogs.Add(new UsedLog 
-                //{
+            await AsyncPost(RequestBody, stream.Value, _responseBody);
+            //var writer = new StreamWriter(_responseBody);
+            //int i = 0;
+            //while (i < 30) // 无限循环，模拟持续的服务器端发送
+            //{
+            //    await writer.WriteLineAsync($"data: { DateTimeOffset.Now },i={i}");
+            //    await writer.FlushAsync();
+            //    await Task.Delay(1000); // 每秒发送一次
+            //    i++;
+            //}
 
-                //});
-                //_dbContext.SaveChanges();
 
-                //当余额够扣的时候，执行转发操作。
-                return PostData(Body, stream.Value);
-            } 
-            finally
-            {
-                Debug.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} 完成接口调用");
-            }
-            // return Json(new { success = true, prompt_tokens= n,model= model });
         }
 
+        #region gpt
 
-         
-       
-        private async Task<ActionResult> PostDataBak(string requestContent)
+        private async Task AsyncPost(string requestContent, bool stream, Stream outputStream)
         {
             var content = new StringContent(requestContent, Encoding.UTF8, "application/json");
-            using var client = new HttpClient();
-            var token = _configuration["GPTToken"];
-            var url = _configuration["GPTUrl"];
-            // 设置 Authorization 头部
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var chatGptResponse = await client.PostAsync(url, content);
-            var stream = await chatGptResponse.Content.ReadAsStreamAsync(); 
-            return File(stream, "text/event-stream");
-
-            //if (chatGptResponse.IsSuccessStatusCode)
-            //{
-            //    var stream = await chatGptResponse.Content.ReadAsStreamAsync();
-            //    return File(stream, "application/octet-stream");
-            //    //Response.Headers.Add("Content-Type", "text/event-stream");
-            //    //var stream = await chatGptResponse.Content.ReadAsStreamAsync();
-            //    //var buffer = new byte[1024];
-            //    //int bytesRead;
-            //    //while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-            //    //{
-            //    //    var chatResponseChunk = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            //    //    await Response.WriteAsync($"data: {chatResponseChunk}\n\n");
-            //    //    await Response.Body.FlushAsync();
-            //    //}
-            //}
-            //else
-            //{
-            //    string errorResponse = await chatGptResponse.Content.ReadAsStringAsync();
-            //    return BadRequest($"无法获取文件流,代码为：{chatGptResponse.StatusCode}");
-            //}
-        }
-        private async Task<ActionResult> PostData(string requestContent,bool stream)
-        {
-            var content = new StringContent(requestContent, Encoding.UTF8, "application/json");
-            using var client = new HttpClient();
+            var client = new HttpClient();
             var token = _configuration["GPTToken"];
             var url = _configuration["GPTUrl"];
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -121,27 +105,28 @@ namespace BitStudioWeb.Controllers
             //if (chatGptResponse.IsSuccessStatusCode)
             //{
             var responseStream = await chatGptResponse.Content.ReadAsStreamAsync();
-            var outputStream = new MemoryStream();
+
             await WriteMsg(responseStream, outputStream, stream, requestContent);
-            outputStream.Position = 0;
-         
-            return File(outputStream, "text/event-stream");
-            //}
-            //else
-            //{
-            //    string errorResponse = await chatGptResponse.Content.ReadAsStringAsync();
-            //    return BadRequest($"无法获取文件流,代码为：{chatGptResponse.StatusCode}");
-            //}
+
+            return;
         }
 
-        private  async Task WriteMsg(Stream responseStream, MemoryStream outputStream,
-            bool stream,string requestContent)
+        /// <summary>
+        /// 先使用再扣费原则，前提是账户有余额。
+        /// </summary>
+        /// <param name="responseStream"></param>
+        /// <param name="outputStream"></param>
+        /// <param name="stream"></param>
+        /// <param name="requestContent"></param>
+        /// <returns></returns>
+        private async Task WriteMsg(Stream responseStream, Stream outputStream,
+            bool stream, string requestContent)
         {
             string Body = "";
             List<String> messages = new List<string>();
             using (StreamReader sr = new StreamReader(responseStream))
             {
-                using (StreamWriter sw = new StreamWriter(outputStream, leaveOpen: true))
+                using (StreamWriter sw = new StreamWriter(outputStream))
                 {
                     if (stream)
                     {
@@ -153,15 +138,17 @@ namespace BitStudioWeb.Controllers
                                 var lineBody = line.TrimStart(new char[] { 'd', 'a', 't', 'a', ':' });
                                 messages.Add(lineBody);
                             }
-                            else if(line.StartsWith("{\"error\""))
+                            else if (line.StartsWith("{\"error\""))
                             {
                                 //如果出现错误，直接返回。
                                 await sw.WriteLineAsync(line);
+                                await sw.FlushAsync();
                                 return;
                             }
 
                             Debug.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} 异步写入消息： { line}");
                             await sw.WriteLineAsync(line);
+                            await sw.FlushAsync();
                         }
                     }
                     else
@@ -169,6 +156,7 @@ namespace BitStudioWeb.Controllers
                         Body = sr.ReadToEnd();
                         Debug.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} 异步写入消息： { Body}");
                         await sw.WriteLineAsync(Body);
+                        await sw.FlushAsync();
                     }
 
 
@@ -183,30 +171,30 @@ namespace BitStudioWeb.Controllers
                 var id = tokeninfo.Value<string>("id");
                 var @object = tokeninfo.Value<string>("object");
                 var model = tokeninfo.Value<string>("model");
-                if(messages.Count>0)
-                messages.RemoveAt(messages.Count-1);
+                if (messages.Count > 0)
+                    messages.RemoveAt(messages.Count - 1);
                 foreach (var one in messages)
                 {
                     JObject i = Newtonsoft.Json.JsonConvert.DeserializeObject(one) as JObject;
                     JArray choices = i["choices"] as JArray;
-                    foreach(JObject c in choices)
+                    foreach (JObject c in choices)
                     {
                         JObject delta = c["delta"] as JObject;
                         string content = delta.Value<string>("content");
                         Content += content;
                     }
                 }
-                var m = new JArray()  ;
+                var m = new JArray();
                 var cobject = new JObject();
                 cobject["content"] = Content;
                 m.Add(cobject);
-                var completion_tokens = NumTokensFromMessages(m, model,true);
+                var completion_tokens = NumTokensFromMessages(m, model, true);
 
 
                 JObject requestInfo = Newtonsoft.Json.JsonConvert.DeserializeObject(requestContent) as JObject;
-               
+
                 var requestMssages = requestInfo["messages"] as Newtonsoft.Json.Linq.JArray;
-                var prompt_tokens=NumTokensFromMessages(requestMssages, model);
+                var prompt_tokens = NumTokensFromMessages(requestMssages, model);
                 var total_tokens = prompt_tokens + completion_tokens;
 
                 await AddUsedLogs(id, @object, model, prompt_tokens, completion_tokens, total_tokens);
@@ -222,7 +210,7 @@ namespace BitStudioWeb.Controllers
                 var completion_tokens = usage.Value<int>("completion_tokens");
                 var total_tokens = usage.Value<int>("total_tokens");
 
-              await  AddUsedLogs(id, @object, model, prompt_tokens, completion_tokens, total_tokens);
+                await AddUsedLogs(id, @object, model, prompt_tokens, completion_tokens, total_tokens);
 
             }
 
@@ -233,8 +221,8 @@ namespace BitStudioWeb.Controllers
         /// </summary>
         /// <param name="userid"></param>
         /// <param name="total_power">要扣掉的算力</param>
-        private async Task<KeyValuePair<bool,string>>   UpdateInvUsedMaster(User user,decimal total_power)
-        { 
+        private async Task<KeyValuePair<bool, string>> UpdateInvUsedMaster(User user, decimal total_power)
+        {
             KeyValuePair<bool, string> result;
             var now = DateTime.Now;
             lock (user)
@@ -251,7 +239,7 @@ namespace BitStudioWeb.Controllers
                             where c.UserID == user.ID
                             && (c.ExpDayTime == DateTime.MinValue//不限制时间。
                             || c.ExpDayTime >= now)//没有过期的。
-                            && (c.Count==0||(used == null) || (used!=null&& c.Count>used.Count))//不限使用次数的，没有使用过的，没有超过限制次数的。
+                            && (c.Count == 0 || (used == null) || (used != null && c.Count > used.Count))//不限使用次数的，没有使用过的，没有超过限制次数的。
                             && (used == null || (used != null && c.Value > used.Value))
                             select new InvSearch(
                                 c.ExpDayTime,
@@ -269,7 +257,7 @@ namespace BitStudioWeb.Controllers
                                false
                             );
                 var q = query.ToList();
-                foreach(var one in q)
+                foreach (var one in q)
                 {
                     //是否失效。
                     one.IsExpired = (one.Count > 0 && one.Count <= one.UsedCount) || (one.Value <= one.UsedCount) ||
@@ -343,13 +331,13 @@ namespace BitStudioWeb.Controllers
                 _dbContext.SaveChanges();
                 result = new KeyValuePair<bool, string>(true, "");
             }
-            Exit:
+        Exit:
             return await Task.FromResult(result);
         }
 
-   
 
- 
+
+
 
         /// <summary>
         /// 写入算力流水
@@ -364,8 +352,8 @@ namespace BitStudioWeb.Controllers
         private async Task<KeyValuePair<bool, string>> AddUsedLogs(string id, string @object, string model, int prompt_tokens,
             int completion_tokens, int total_tokens)
         {
-            var user = UserHelper. GetCurrentUserID(User.Identity.Name,_dbContext);
-           
+            var user = UserHelper.GetCurrentUserID(UserIdentityName, _dbContext);
+
 
             //写入消费记录。
             await _dbContext.UsedLogs.AddAsync(new UsedLog
@@ -377,19 +365,19 @@ namespace BitStudioWeb.Controllers
                 PromptTokens = prompt_tokens,
                 TotalTokens = total_tokens,
                 RequestID = id,
-                UserID=user.ID, 
+                UserID = user.ID,
             });
             if (total_tokens > 0)
             {
                 //把token换算成算力，进行扣费。
-                var (isSuccess, powerValue,Msg) = GetPowerValue(model, prompt_tokens, completion_tokens);
-                if(!isSuccess)
+                var (isSuccess, powerValue, Msg) = GetPowerValue(model, prompt_tokens, completion_tokens);
+                if (!isSuccess)
                 {
                     return await Task.FromResult(new KeyValuePair<bool, string>(isSuccess, Msg));
                 }
                 var r = await UpdateInvUsedMaster(user, powerValue);
                 if (r.Key == false)
-                    return await Task.FromResult(r); 
+                    return await Task.FromResult(r);
             }
 
             await _dbContext.SaveChangesAsync();
@@ -397,9 +385,9 @@ namespace BitStudioWeb.Controllers
         }
 
         public class ModelPrice
-        { 
+        {
             public string Model { get; set; }
-             
+
             public decimal InputPrice { get; set; }
             public decimal InputTokens { get; set; }
 
@@ -423,9 +411,9 @@ namespace BitStudioWeb.Controllers
         /// <param name="prompt_tokens">输入token数量</param>
         /// <param name="completion_tokens">输出token数量</param>
         /// <returns></returns>
-        private (bool, decimal, string) GetPowerValue(string model,int prompt_tokens,int completion_tokens)
+        private (bool, decimal, string) GetPowerValue(string model, int prompt_tokens, int completion_tokens)
         {
-            var PriceList = new List<ModelPrice> 
+            var PriceList = new List<ModelPrice>
             {
                 new ModelPrice{ Model="gpt-3.5",InputPrice=0.0010m,InputTokens=1000m,OutPrice=0.0020m,OutTokens=1000m } ,
                 new ModelPrice{ Model="gpt-4",InputPrice=0.01m,InputTokens=1000m,OutPrice=0.030m,OutTokens=1000m } ,
@@ -433,17 +421,17 @@ namespace BitStudioWeb.Controllers
                  
                 //在数据库里维护好价格表。
             };
-            var query =( from c in PriceList
+            var query = (from c in PriceList
                          where model.Contains(c.Model, StringComparison.OrdinalIgnoreCase)
-                        select c).FirstOrDefault();
-            if(query==null)
+                         select c).FirstOrDefault();
+            if (query == null)
             {
-                return (false,0,$"{model}未设置价格，请联系运营！");
+                return (false, 0, $"{model}未设置价格，请联系运营！");
             }
             var inputPrice = query.InputPrice / query.InputTokens;
-            var outPrice = query.OutPrice / query. OutTokens;
+            var outPrice = query.OutPrice / query.OutTokens;
             //计算费用，单位美元。
-            var amount =( inputPrice * prompt_tokens + outPrice * completion_tokens);
+            var amount = (inputPrice * prompt_tokens + outPrice * completion_tokens);
             //把美元转换成人民币。
             var resultYan = amount * USDConvertYan;
 
@@ -461,7 +449,7 @@ namespace BitStudioWeb.Controllers
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public static int NumTokensFromMessages(Newtonsoft.Json.Linq.JArray data,
-            string model = "gpt-3.5-turbo-0613",bool isResponse=false)
+            string model = "gpt-3.5-turbo-0613", bool isResponse = false)
         {
             GptEncoding encoding = null;
             try
@@ -505,16 +493,16 @@ namespace BitStudioWeb.Controllers
             int numTokens = 0;
             foreach (Newtonsoft.Json.Linq.JObject message in data)
             {
-                if(!isResponse)
-                numTokens += tokensPerMessage;
+                if (!isResponse)
+                    numTokens += tokensPerMessage;
                 foreach (KeyValuePair<string, Newtonsoft.Json.Linq.JToken> pair in message)
                 {
                     numTokens += encoding.Encode(pair.Value.ToString()).Count;
-                    if(!isResponse)
-                    if (pair.Key == "name")
-                    {
-                        numTokens += tokensPerName;
-                    }
+                    if (!isResponse)
+                        if (pair.Key == "name")
+                        {
+                            numTokens += tokensPerName;
+                        }
                 }
             }
             if (!isResponse)
@@ -522,6 +510,136 @@ namespace BitStudioWeb.Controllers
             return numTokens;
         }
 
+        #endregion
+
+    }
+
+    public class GPTController : Controller
+    {
+        private readonly MysqlDBContext _dbContext;
+        private readonly IConfiguration _configuration;
+        public GPTController(MysqlDBContext dbContext, IConfiguration configuration)
+        {
+            _dbContext = dbContext;
+            _configuration = configuration;
+        }
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleConst.Admin)]
+        [Route("/v1/chat/completions")]
+        [HttpPost]
+        public Task<ActionResult> ChatCompletions()
+        {
+            try
+            {
+                String Body = "";
+                using (var streamReader = new StreamReader(HttpContext.Request.BodyReader.AsStream()))
+                {
+                    Body = streamReader.ReadToEnd();
+                }
+              
+
+                //var messages = tokeninfo["messages"] as Newtonsoft.Json.Linq.JArray;
+                // Get encoding by model name
+                //var encoding = GptEncoding.GetEncodingForModel(token.Model);
+                //var encoded = encoding.Encode(token.Text);
+                //var n = NumTokensFromMessages(messages, model);
+                /*
+                  注意：
+                  这个是计算上下文的token(prompt_tokens)数量算法，
+                  并不包含回复的token(completion_tokens) 
+                  计算回复的token ：直接使用函数encoding.Encode(回复字符串).Count
+                  总消耗token(total_tokens)= prompt_tokens+completion_tokens
+                */
+                //写入消费记录。
+                //_dbContext.UsedLogs.Add(new UsedLog 
+                //{
+
+                //});
+                //_dbContext.SaveChanges();
+
+                //当余额够扣的时候，执行转发操作。
+                return PostData(Body);
+            }
+            finally
+            {
+                Debug.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} 完成接口调用");
+            }
+            // return Json(new { success = true, prompt_tokens= n,model= model });
+        }
+
+
+
+
+        private async Task<ActionResult> PostDataBak(string requestContent)
+        {
+            var content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+            using var client = new HttpClient();
+            var token = _configuration["GPTToken"];
+            var url = _configuration["GPTUrl"];
+            // 设置 Authorization 头部
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var chatGptResponse = await client.PostAsync(url, content);
+            var stream = await chatGptResponse.Content.ReadAsStreamAsync();
+            return File(stream, "text/event-stream");
+
+            //if (chatGptResponse.IsSuccessStatusCode)
+            //{
+            //    var stream = await chatGptResponse.Content.ReadAsStreamAsync();
+            //    return File(stream, "application/octet-stream");
+            //    //Response.Headers.Add("Content-Type", "text/event-stream");
+            //    //var stream = await chatGptResponse.Content.ReadAsStreamAsync();
+            //    //var buffer = new byte[1024];
+            //    //int bytesRead;
+            //    //while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            //    //{
+            //    //    var chatResponseChunk = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            //    //    await Response.WriteAsync($"data: {chatResponseChunk}\n\n");
+            //    //    await Response.Body.FlushAsync();
+            //    //}
+            //}
+            //else
+            //{
+            //    string errorResponse = await chatGptResponse.Content.ReadAsStringAsync();
+            //    return BadRequest($"无法获取文件流,代码为：{chatGptResponse.StatusCode}");
+            //}
+        }
+        private async Task<ActionResult> PostData(string requestContent)
+        {
+
+            HttpContext.Response.ContentType = "text/event-stream";
+            HttpContext.Response.Headers["Cache-Control"] = "no-cache";
+            HttpContext.Response.Headers["Connection"] = "keep-alive";
+            HttpContext.Response.Headers["Access-Control-Allow-Origin"] = "*"; // 允许跨域 
+            var result= new GPTStreamWriterResult(HttpContext.Response.Body, _dbContext, _configuration, User.Identity.Name,
+                requestContent);
+            //var result = new StreamWriterResult(HttpContext.Response.Body);
+            return await Task.FromResult(result);
+
+            // memStream.Seek(0, SeekOrigin.Begin); 
+            // return new  (memStream, "text/event-stream"); 
+            //var outputStream = Response.Body; 
+            //var t = Task.Run(async () =>
+            //  {
+            //      await AsyncPost(requestContent, stream, outputStream);
+            //    // 在这里可以继续执行其他操作
+            //}); 
+            //return File(outputStream, "text/event-stream"); 
+        }
+
+        private async Task WriteTimeData(Stream writer)
+        {
+
+            while (true)
+            {
+                var line = System.Text.Encoding.UTF8.GetBytes($"data: {DateTime.Now}");
+                await writer.WriteAsync(line, 0, line.Length);
+                //await writer.WriteLineAsync();
+                //
+                await writer.FlushAsync();
+                await Task.Delay(1000); // 异步等待1秒
+
+            }
+
+        }
         //[Authorize]
         //[HttpPost("test")]
         //public ActionResult Test()
@@ -556,11 +674,11 @@ namespace BitStudioWeb.Controllers
         /// <summary>
         /// 是否失效。1 失效，0有效。
         /// </summary>
-       public  bool IsExpired { get;internal set; }
+        public bool IsExpired { get; internal set; }
 
         public InvSearch(DateTime expDayTime, int count, long productId, long skuId, long userID, decimal value,
             DateTime createTime, DateTime modifyTime, decimal usedValue, int usedCount,
-            DateTime usedExpDayTime, long usedID,bool isExpired)
+            DateTime usedExpDayTime, long usedID, bool isExpired)
         {
             ExpDayTime = expDayTime;
             Count = count;
@@ -591,8 +709,8 @@ namespace BitStudioWeb.Controllers
                    UsedValue == other.UsedValue &&
                    UsedCount == other.UsedCount &&
                    UsedExpDayTime == other.UsedExpDayTime &&
-                   UsedID == other.UsedID&&
-                   IsEdit== other.IsEdit
+                   UsedID == other.UsedID &&
+                   IsEdit == other.IsEdit
                    ;
         }
 
