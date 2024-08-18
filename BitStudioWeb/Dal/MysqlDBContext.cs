@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -58,6 +59,26 @@ namespace bitkanda.Dal
 
         [Display(Name = "角色")]
         public string Role { get; set; }
+
+
+        /// <summary>
+        /// 是否欠费,欠费的用户不允许调用付费接口。
+        /// </summary>
+        [NotMapped]
+        public bool IsDebt
+        {
+            get;set;
+        }
+
+        /// <summary>
+        /// 可用余额。
+        /// </summary>
+       [NotMapped]
+        public decimal Balance
+        {
+            get;set;
+        }
+
 
     }
 
@@ -485,7 +506,7 @@ namespace bitkanda.Dal
         /// 使用的模型
         /// </summary>
         [Required]
-        [Column(TypeName = "varchar(30)")]
+        [Column(TypeName = "varchar(100)")]
         public string @Object { get; set; }
 
        /// <summary>
@@ -506,6 +527,20 @@ namespace bitkanda.Dal
         /// </summary>
         [Required]
         public int TotalTokens { get; set; }
+
+       /// <summary>
+       /// 是否扣费成功。
+       /// </summary>
+        public bool IsPay { get; set; }
+
+        /// <summary>
+        /// 当前调用花费算力。
+        /// </summary>
+        [Required]
+        [DefaultValue(0)]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PowerValue { get; set; }
+
     }
 
     public class MysqlDBContext: DbContext

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using bitkanda.Dal;
 
 namespace bitkanda.Migrations
 {
     [DbContext(typeof(MysqlDBContext))]
-    partial class MysqlDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240204173050_ispay")]
+    partial class ispay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,10 +329,7 @@ namespace bitkanda.Migrations
 
                     b.Property<string>("Object")
                         .IsRequired()
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<decimal>("PowerValue")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<int>("PromptTokens")
                         .HasColumnType("INTEGER");

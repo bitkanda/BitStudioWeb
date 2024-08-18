@@ -549,3 +549,168 @@ VALUES ('20240113073524_orderAddpic', '5.0.17');
 
 COMMIT;
 
+BEGIN TRANSACTION;
+
+CREATE TABLE "InvTotalMaster" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_InvTotalMaster" PRIMARY KEY AUTOINCREMENT,
+    "UserID" INTEGER NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "SkuId" INTEGER NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "ModifyTime" DateTime NOT NULL,
+    "Value" decimal(10,2) NOT NULL,
+    "ExpDayTime" DateTime NOT NULL,
+    "Count" int NOT NULL
+);
+
+CREATE TABLE "InvUsedMaster" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_InvUsedMaster" PRIMARY KEY AUTOINCREMENT,
+    "UserID" INTEGER NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "SkuId" INTEGER NOT NULL,
+    "Qty" INTEGER NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "Value" decimal(10,2) NOT NULL,
+    "ExpDayTime" DateTime NOT NULL,
+    "Count" int NOT NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240120100225_inv', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE "UsedLogs" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_UsedLogs" PRIMARY KEY AUTOINCREMENT,
+    "UserName" TEXT NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "RequestID" varchar(40) NOT NULL,
+    "Model" varchar(30) NOT NULL,
+    "Object" varchar(30) NOT NULL,
+    "PromptTokens" INTEGER NOT NULL,
+    "CompletionTokens" INTEGER NOT NULL,
+    "TotalTokens" INTEGER NOT NULL
+);
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240120164908_AddUsedLogs', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "UsedLogs" ADD "UserID" INTEGER NOT NULL DEFAULT 0;
+
+ALTER TABLE "InvUsedMaster" ADD "ModifyTime" DateTime NOT NULL DEFAULT '0001-01-01 00:00:00';
+
+CREATE TABLE "ef_temp_UsedLogs" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_UsedLogs" PRIMARY KEY AUTOINCREMENT,
+    "CompletionTokens" INTEGER NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "Model" varchar(30) NOT NULL,
+    "Object" varchar(30) NOT NULL,
+    "PromptTokens" INTEGER NOT NULL,
+    "RequestID" varchar(40) NOT NULL,
+    "TotalTokens" INTEGER NOT NULL,
+    "UserID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_UsedLogs" ("ID", "CompletionTokens", "CreateTime", "Model", "Object", "PromptTokens", "RequestID", "TotalTokens", "UserID")
+SELECT "ID", "CompletionTokens", "CreateTime", "Model", "Object", "PromptTokens", "RequestID", "TotalTokens", "UserID"
+FROM "UsedLogs";
+
+CREATE TABLE "ef_temp_InvUsedMaster" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_InvUsedMaster" PRIMARY KEY AUTOINCREMENT,
+    "Count" int NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "ExpDayTime" DateTime NOT NULL,
+    "ModifyTime" DateTime NOT NULL,
+    "ProductId" INTEGER NOT NULL,
+    "SkuId" INTEGER NOT NULL,
+    "UserID" INTEGER NOT NULL,
+    "Value" decimal(10,2) NOT NULL
+);
+
+INSERT INTO "ef_temp_InvUsedMaster" ("ID", "Count", "CreateTime", "ExpDayTime", "ModifyTime", "ProductId", "SkuId", "UserID", "Value")
+SELECT "ID", "Count", "CreateTime", "ExpDayTime", "ModifyTime", "ProductId", "SkuId", "UserID", "Value"
+FROM "InvUsedMaster";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "UsedLogs";
+
+ALTER TABLE "ef_temp_UsedLogs" RENAME TO "UsedLogs";
+
+DROP TABLE "InvUsedMaster";
+
+ALTER TABLE "ef_temp_InvUsedMaster" RENAME TO "InvUsedMaster";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240121085853_updateinv', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "UsedLogs" ADD "IsPay" INTEGER NOT NULL DEFAULT 0;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240204173050_ispay', '5.0.17');
+
+COMMIT;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE "UsedLogs" ADD "PowerValue" decimal(10,2) NOT NULL DEFAULT '0.0';
+
+CREATE TABLE "ef_temp_UsedLogs" (
+    "ID" INTEGER NOT NULL CONSTRAINT "PK_UsedLogs" PRIMARY KEY AUTOINCREMENT,
+    "CompletionTokens" INTEGER NOT NULL,
+    "CreateTime" DateTime NOT NULL,
+    "IsPay" INTEGER NOT NULL,
+    "Model" varchar(30) NOT NULL,
+    "Object" varchar(100) NOT NULL,
+    "PowerValue" decimal(10,2) NOT NULL,
+    "PromptTokens" INTEGER NOT NULL,
+    "RequestID" varchar(40) NOT NULL,
+    "TotalTokens" INTEGER NOT NULL,
+    "UserID" INTEGER NOT NULL
+);
+
+INSERT INTO "ef_temp_UsedLogs" ("ID", "CompletionTokens", "CreateTime", "IsPay", "Model", "Object", "PowerValue", "PromptTokens", "RequestID", "TotalTokens", "UserID")
+SELECT "ID", "CompletionTokens", "CreateTime", "IsPay", "Model", "Object", "PowerValue", "PromptTokens", "RequestID", "TotalTokens", "UserID"
+FROM "UsedLogs";
+
+COMMIT;
+
+PRAGMA foreign_keys = 0;
+
+BEGIN TRANSACTION;
+
+DROP TABLE "UsedLogs";
+
+ALTER TABLE "ef_temp_UsedLogs" RENAME TO "UsedLogs";
+
+COMMIT;
+
+PRAGMA foreign_keys = 1;
+
+BEGIN TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240504060854_UsedLogPowerValue', '5.0.17');
+
+COMMIT;
+

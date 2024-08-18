@@ -247,7 +247,8 @@ namespace BitStudioWeb.Controllers
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
-                var user = _dbContext.Users.FirstOrDefault(u => u.PhoneNumber == User.Identity.Name);
+                var PayUser = UserHelper.GetCurrentUserID(User.Identity.Name, _dbContext);
+                
                 var msg = "";
                 bool data;
                 var dbOrder = _dbContext.Orders.Find(PayOrder.orderId);
@@ -261,7 +262,7 @@ namespace BitStudioWeb.Controllers
 
                     dbOrder.PayTime = DateTime.Now;
                     dbOrder.ModifyTime = DateTime.Now;
-                    dbOrder.PayUserId = user.ID;
+                    dbOrder.PayUserId = PayUser.ID;
                     dbOrder.PayOrderNo = PayOrder.PayOrderNo;
                     dbOrder.OrderStatus = 1;
                     data = _dbContext.SaveChanges() > 0;
@@ -305,7 +306,18 @@ namespace BitStudioWeb.Controllers
                             m.Value += one.Value * one.Qty;
                             m.ModifyTime = dbOrder.PayTime.Value;
                         }
+                       
                         _dbContext.SaveChanges();
+                        var orderUser= _dbContext.Users.Find(dbOrder.UserId);
+                        var user = UserHelper.GetCurrentUserID(orderUser.PhoneNumber, _dbContext);
+                       
+                        lock (user)
+                        { 
+                            //更新欠费状态。这个后期再优化。
+                            user.IsDebt = false; 
+                            //更新余额。
+                            user.Balance+= one.Value * one.Qty;
+                        }
                     }
 
                   

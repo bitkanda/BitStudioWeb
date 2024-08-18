@@ -243,7 +243,7 @@ namespace BitStudioWeb.Controllers
                             (c.ExpDayTime != DateTime.MinValue && c.ExpDayTime < now))
                         }
                         ;
-            var q = query.ToList();
+            var q = query.ToList().OrderBy(e=>e.IsExpired);
             //foreach (var one in q)
             //{
             //    //是否失效。

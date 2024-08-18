@@ -26,10 +26,11 @@ namespace bitkanda
                Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel(options =>
-                    {
-                        options.AllowSynchronousIO = true;
-                    });
+                    //如果是linux的，需要启用该代码。https://www.cnblogs.com/bmyblogs/p/14284799.html
+                    //webBuilder.UseKestrel(options =>
+                    //{
+                    //    options.AllowSynchronousIO = true;
+                    //});
                     webBuilder.UseStartup<Startup>();
                 });
         //WebHost.CreateDefaultBuilder(args)
